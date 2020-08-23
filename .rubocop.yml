@@ -4,7 +4,16 @@ AllCops:
     - bin/bundle
     - config/**/*
     - node_modules/**/*
+    - db/schema.rb
 
 Style/Documentation:
   Exclude:
     - db/migrate/**/*
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - db/migrate/**/*
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*

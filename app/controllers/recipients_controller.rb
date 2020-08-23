@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+##
 class RecipientsController < ApplicationController
-  before_action :set_recipient, only: [:show, :edit, :update, :destroy]
+  before_action :set_recipient, only: %i[show edit update destroy]
 
   # GET /recipients
   # GET /recipients.json
@@ -9,8 +12,7 @@ class RecipientsController < ApplicationController
 
   # GET /recipients/1
   # GET /recipients/1.json
-  def show
-  end
+  def show; end
 
   # GET /recipients/new
   def new
@@ -18,8 +20,7 @@ class RecipientsController < ApplicationController
   end
 
   # GET /recipients/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /recipients
   # POST /recipients.json
@@ -62,13 +63,14 @@ class RecipientsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_recipient
-      @recipient = Recipient.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def recipient_params
-      params.require(:recipient).permit(:phone, :email, :name, :notes)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_recipient
+    @recipient = Recipient.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def recipient_params
+    params.require(:recipient).permit(:phone, :email, :name, :notes)
+  end
 end
