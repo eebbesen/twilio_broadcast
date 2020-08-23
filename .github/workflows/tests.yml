@@ -1,0 +1,44 @@
+env:
+  RUBY_VERSION: 2.7
+
+name: Rails tests
+on: [pull_request]
+jobs:
+  rubocop:
+    name: rubocop
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: install rubocop
+        run: gem install rubocop
+      - name: run rubocop
+        run: rubocop
+
+  unit_tests:
+    name: unit tests
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: install bundler and bundle install
+        run: |
+          gem install bundler
+          bundle install
+      - name: project setup
+        run: |
+           yarn install --check-files
+           bin/rails webpacker:install
+           bin/rake db:setup
+      - name: run tests
+        run: bundle exec rake
+      # - name: Upload coverage results
+      #   uses: actions/upload-artifact@master
+      #   if: always()
+      #   with:
+      #     name: coverage-report
+      #     path: coverage
