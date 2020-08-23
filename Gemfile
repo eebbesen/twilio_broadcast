@@ -29,7 +29,11 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.2', require: false
 
 #### NON-DEFAULT
+gem 'bootstrap', '~> 5.0.0.alpha1'
 gem 'devise'
+gem 'jquery-rails'
+gem 'sprockets-rails'
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
