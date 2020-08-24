@@ -7,3 +7,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+User.create(email: 'user@tb.tb.moc', password: 'Passw0rd!', password_confirmation: 'Passw0rd!')
+
+Recipient.create(phone: '0005551212')
+Recipient.create(phone: '0005551213', email: 'recipient@tb.tb.moc')
