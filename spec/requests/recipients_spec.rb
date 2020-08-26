@@ -25,107 +25,117 @@ RSpec.describe '/recipients', type: :request do
     { else: 'aaaaaaa' }
   end
 
-  describe 'GET /index' do
-    it 'renders a successful response' do
-      Recipient.create! valid_attributes
-      get recipients_url
-      expect(response).to be_successful
-    end
-  end
+  let(:user) { User.create(email: 'user@tb.tb.moc', password: 'Passw0rd!', password_confirmation: 'Passw0rd!') }
 
-  describe 'GET /show' do
-    it 'renders a successful response' do
-      recipient = Recipient.create! valid_attributes
-      get recipient_url(recipient)
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /new' do
-    it 'renders a successful response' do
-      get new_recipient_url
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /edit' do
-    it 'render a successful response' do
-      recipient = Recipient.create! valid_attributes
-      get edit_recipient_url(recipient)
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'POST /create' do
-    context 'with valid parameters' do
-      it 'creates a new Recipient' do
-        expect do
-          post recipients_url, params: { recipient: valid_attributes }
-        end.to change(Recipient, :count).by(1)
-      end
-
-      it 'redirects to the created recipient' do
-        post recipients_url, params: { recipient: valid_attributes }
-        expect(response).to redirect_to(recipient_url(Recipient.last))
-      end
+  context 'signed in user' do
+    before(:each) do
+      sign_in user
     end
 
-    context 'with invalid parameters' do
-      it 'does not create a new Recipient' do
-        expect do
-          post recipients_url, params: { recipient: invalid_attributes }
-        end.to change(Recipient, :count).by(0)
-      end
-
-      it "renders a successful response (i.e. to display the 'new' template)" do
-        post recipients_url, params: { recipient: invalid_attributes }
+    describe 'GET /index' do
+      it 'renders a successful response' do
+        Recipient.create! valid_attributes
+        get recipients_url
         expect(response).to be_successful
       end
     end
-  end
 
-  describe 'PATCH /update' do
-    context 'with valid parameters' do
-      let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
-      end
-
-      it 'updates the requested recipient' do
+    describe 'GET /show' do
+      it 'renders a successful response' do
         recipient = Recipient.create! valid_attributes
-        patch recipient_url(recipient), params: { recipient: new_attributes }
-        recipient.reload
-        skip('Add assertions for updated state')
-      end
-
-      it 'redirects to the recipient' do
-        recipient = Recipient.create! valid_attributes
-        patch recipient_url(recipient), params: { recipient: new_attributes }
-        recipient.reload
-        expect(response).to redirect_to(recipient_url(recipient))
+        get recipient_url(recipient)
+        expect(response).to be_successful
       end
     end
 
-    context 'with invalid parameters' do
-      it "renders an unsuccessful response (i.e. to display the 'edit' template)" do
-        recipient = Recipient.create! valid_attributes
-        patch recipient_url(recipient), params: { recipient: invalid_attributes }
-        expect(response).not_to be_successful
+    describe 'GET /new' do
+      it 'renders a successful response' do
+        get new_recipient_url
+        expect(response).to be_successful
       end
     end
-  end
 
-  describe 'DELETE /destroy' do
-    it 'destroys the requested recipient' do
-      recipient = Recipient.create! valid_attributes
-      expect do
+    describe 'GET /edit' do
+      it 'render a successful response' do
+        recipient = Recipient.create! valid_attributes
+        get edit_recipient_url(recipient)
+        expect(response).to be_successful
+      end
+    end
+
+    describe 'POST /create' do
+      context 'with valid parameters' do
+        it 'creates a new Recipient' do
+          expect do
+            post recipients_url, params: { recipient: valid_attributes }
+          end.to change(Recipient, :count).by(1)
+        end
+
+        it 'redirects to the created recipient' do
+          post recipients_url, params: { recipient: valid_attributes }
+          expect(response).to redirect_to(recipient_url(Recipient.last))
+        end
+      end
+
+      context 'with invalid parameters' do
+        it 'does not create a new Recipient' do
+          expect do
+            post recipients_url, params: { recipient: invalid_attributes }
+          end.to change(Recipient, :count).by(0)
+        end
+
+        it "renders a successful response (i.e. to display the 'new' template)" do
+          post recipients_url, params: { recipient: invalid_attributes }
+          expect(response).to be_successful
+        end
+      end
+    end
+
+    describe 'PATCH /update' do
+      context 'with valid parameters' do
+        let(:new_attributes) do
+          { phone: '6125551212' }
+        end
+
+        it 'updates the requested recipient' do
+          recipient = Recipient.create! valid_attributes
+          patch recipient_url(recipient), params: { recipient: new_attributes }
+          recipient.reload
+
+          expect(response).to redirect_to(recipient_url(recipient))
+          expect(recipient.phone).to eq(new_attributes[:phone])
+        end
+
+        it 'redirects to the recipient' do
+          recipient = Recipient.create! valid_attributes
+          patch recipient_url(recipient), params: { recipient: new_attributes }
+          recipient.reload
+          expect(response).to redirect_to(recipient_url(recipient))
+        end
+      end
+
+      context 'with invalid parameters' do
+        it "renders an unsuccessful response (i.e. to display the 'edit' template)" do
+          recipient = Recipient.create! valid_attributes
+          patch recipient_url(recipient), params: { recipient: invalid_attributes }
+          expect(response).not_to be_successful
+        end
+      end
+    end
+
+    describe 'DELETE /destroy' do
+      it 'destroys the requested recipient' do
+        recipient = Recipient.create! valid_attributes
+        expect do
+          delete recipient_url(recipient)
+        end.to change(Recipient, :count).by(-1)
+      end
+
+      it 'redirects to the recipients list' do
+        recipient = Recipient.create! valid_attributes
         delete recipient_url(recipient)
-      end.to change(Recipient, :count).by(-1)
-    end
-
-    it 'redirects to the recipients list' do
-      recipient = Recipient.create! valid_attributes
-      delete recipient_url(recipient)
-      expect(response).to redirect_to(recipients_url)
+        expect(response).to redirect_to(recipients_url)
+      end
     end
   end
 end
