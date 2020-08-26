@@ -17,8 +17,8 @@ jobs:
       - name: run rubocop
         run: rubocop
 
-  unit_tests:
-    name: unit tests
+  rspec_tests:
+    name: rspec tests
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
