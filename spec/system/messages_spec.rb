@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Messages", type: :system do
+RSpec.describe 'Messages', type: :system do
   before do
     driven_by(:rack_test)
 
@@ -27,7 +29,6 @@ RSpec.describe "Messages", type: :system do
   end
 
   it "doesn't allow message creation with blank content" do
-
     visit '/messages'
     click_on 'New Message'
 
