@@ -12,6 +12,10 @@ bin/rails db:seed
 bin/rails server
 ```
 
+http://localhost:3000
+
+In the local environment a test user has been created: user@tb.tb.moc / Passw0rd!
+
 ## Testing
 ### Unit tests
 ```bash
