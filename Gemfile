@@ -37,8 +37,11 @@ gem 'sprockets-rails'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'capybara'
+  gem 'launchy'
   gem 'rspec-rails'
   gem 'rubocop'
+  gem 'selenium-webdriver'
   gem 'simplecov'
 end
 
