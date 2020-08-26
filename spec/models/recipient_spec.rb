@@ -3,5 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Recipient, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'validates presence of phone' do
+    r = Recipient.new(email: 'user@td.td.com')
+    expect(r.valid?).not_to be_truthy
+    expect(r.errors[:phone]).to include("can't be blank")
+  end
 end

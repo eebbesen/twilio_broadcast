@@ -4,5 +4,9 @@
 require 'rails_helper'
 
 RSpec.describe Message, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'validates presence of phone' do
+    r = Message.new
+    expect(r.valid?).not_to be_truthy
+    expect(r.errors[:content]).to include("can't be blank")
+  end
 end
