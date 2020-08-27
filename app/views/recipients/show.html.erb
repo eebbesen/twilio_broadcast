@@ -18,5 +18,5 @@
   <%= @recipient.notes %>
 </p>
 
-<%= link_to 'Edit', edit_recipient_path(@recipient) %> |
-<%= link_to 'Back', recipients_path %>
+<%= link_to 'Edit', edit_recipient_path(@recipient), class: 'btn btn-primary' %>
+<%= link_to 'Cancel', recipients_path, class: 'btn btn-secondary' %>

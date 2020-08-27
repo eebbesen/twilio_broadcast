@@ -1,12 +1,15 @@
 <h1>Recipients</h1>
 
-<table>
+<%= link_to 'New Recipient', new_recipient_path, class: 'btn btn-primary' %>
+
+<table class="table">
   <thead>
     <tr>
       <th>Phone</th>
       <th>Email</th>
       <th>Name</th>
       <th>Notes</th>
+      <th>Active</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -14,17 +17,14 @@
   <tbody>
     <% @recipients.each do |recipient| %>
       <tr>
-        <td><%= recipient.phone %></td>
+        <td><%= link_to recipient.phone, recipient %></td>
         <td><%= recipient.email %></td>
         <td><%= recipient.name %></td>
         <td><%= recipient.notes %></td>
-        <td><%= link_to 'Show', recipient %></td>
-        <td><%= link_to 'Edit', edit_recipient_path(recipient) %></td>
+        <td><%= recipient.active ? 'Yes' : 'No' %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
-
-<%= link_to 'New Recipient', new_recipient_path %>
