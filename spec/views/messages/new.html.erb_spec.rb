@@ -16,8 +16,6 @@ RSpec.describe 'messages/new', type: :view do
 
     assert_select 'form[action=?][method=?]', messages_path, 'post' do
       assert_select 'input[name=?]', 'message[content]'
-
-      assert_select 'input[name=?]', 'message[status]'
     end
   end
 end
