@@ -10,8 +10,17 @@
   </head>
 
   <body>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-    <%= yield %>
+    <div class="container">
+      <% if user_signed_in? %>
+        <div class="container-fluid">
+          <li class="btn logout-btn-wrapper">
+            <%= link_to 'Logout', destroy_user_session_path, method: :delete, id: 'logout-btn' %>
+          </li>
+        </div>
+      <% end %>
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
+      <%= yield %>
+    </div>
   </body>
 </html>

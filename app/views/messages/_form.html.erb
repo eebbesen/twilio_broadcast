@@ -16,17 +16,7 @@
     <%= form.text_field :content %>
   </div>
 
-  <div class="field">
-    <%= form.label :status %>
-    <%= form.text_field :status %>
-  </div>
-
-  <div class="field">
-    <%= form.label :sent_at %>
-    <%= form.datetime_select :sent_at %>
-  </div>
-
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit class: 'btn btn-primary' %>
   </div>
 <% end %>

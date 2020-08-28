@@ -13,5 +13,5 @@
   <%= @message.sent_at %>
 </p>
 
-<%= link_to 'Edit', edit_message_path(@message) %> |
-<%= link_to 'Back', messages_path %>
+<%= link_to 'Edit', edit_message_path(@message), class: 'btn btn-primary' %>
+<%= link_to 'Cancel', messages_path, class: 'btn btn-secondary' %>
