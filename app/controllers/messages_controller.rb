@@ -7,7 +7,7 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @messages = Message.all
+    @messages = Message.all.where(user: current_user)
   end
 
   # GET /messages/1
@@ -25,7 +25,7 @@ class MessagesController < ApplicationController
   # POST /messages
   # POST /messages.json
   def create
-    @message = Message.new(message_params)
+    @message = Message.new(message_params.merge({user_id: current_user.id}))
 
     respond_to do |format|
       if @message.save
@@ -66,11 +66,11 @@ class MessagesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_message
-    @message = Message.find(params[:id])
+    @message = Message.where(id: params[:id], user: current_user).first
   end
 
   # Only allow a list of trusted parameters through.
   def message_params
-    params.require(:message).permit(:content, :status, :sent_at)
+    params.require(:message).permit(:content, :id, :user_id)
   end
 end
