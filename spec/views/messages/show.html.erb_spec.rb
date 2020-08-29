@@ -16,4 +16,10 @@ RSpec.describe 'messages/show', type: :view do
     render
     expect(rendered).to match(/Content/)
   end
+
+  it 'shows message when user attempts to access another user\'s message or message doesn\'t exist' do
+    @message = assign(:message, nil)
+    render
+    expect(rendered).to match(/Message not found/)
+  end
 end

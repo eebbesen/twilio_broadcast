@@ -64,7 +64,7 @@ class MessagesController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
+  # User scope messages
   def set_message
     @message = Message.where(id: params[:id], user: current_user).first
   end

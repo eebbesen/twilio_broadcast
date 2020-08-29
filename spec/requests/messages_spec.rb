@@ -80,6 +80,16 @@ RSpec.describe '/messages', type: :request do
         get edit_message_url(message)
         expect(response).to be_successful
       end
+
+      it "can't edit other user's message" do
+        message = create(:message_2, user: create(:user_2))
+
+        get edit_message_url(message)
+
+        expect(response).to be_successful
+        expect(response.body).not_to include(message.content)
+        expect(response.body).to include('Message not found')
+      end
     end
 
     describe 'POST /create' do
@@ -132,7 +142,19 @@ RSpec.describe '/messages', type: :request do
           message.reload
           expect(response).to redirect_to(message_url(message))
         end
-      end
+
+        it "can't update other user's message" do
+          exception = nil
+          message = create(:message_2, user: create(:user_2))
+
+          begin
+            patch message_url(message), params: { message: new_attributes }
+          rescue => e
+            exception = e
+          end
+
+          expect(exception.message).to include("undefined method `update' for nil:NilClass")
+        end
 
       # this is redirecting and not 200ing
       # getting 200 when run in browser manually
@@ -144,6 +166,7 @@ RSpec.describe '/messages', type: :request do
       #     expect(response).to be_successful
       #   end
       # end
+      end
     end
 
     describe 'DELETE /destroy' do
@@ -158,6 +181,17 @@ RSpec.describe '/messages', type: :request do
         message = Message.create! valid_attributes
         delete message_url(message)
         expect(response).to redirect_to(messages_url)
+      end
+
+      it "can't delete other user's message" do
+        message = create(:message_2, user: create(:user_2))
+
+        begin
+          delete message_url(message)
+        rescue => e
+          exception = e
+        end
+        expect(exception.message).to include("undefined method `destroy' for nil:NilClass")
       end
     end
   end
