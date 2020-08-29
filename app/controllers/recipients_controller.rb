@@ -7,7 +7,7 @@ class RecipientsController < ApplicationController
   # GET /recipients
   # GET /recipients.json
   def index
-    @recipients = Recipient.all
+    @recipients = Recipient.all.where(user: current_user)
   end
 
   # GET /recipients/1
@@ -25,7 +25,7 @@ class RecipientsController < ApplicationController
   # POST /recipients
   # POST /recipients.json
   def create
-    @recipient = Recipient.new(recipient_params)
+    @recipient = Recipient.new(recipient_params.merge({user_id: current_user.id}))
 
     respond_to do |format|
       if @recipient.save
@@ -66,11 +66,11 @@ class RecipientsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_recipient
-    @recipient = Recipient.find(params[:id])
+    @recipient = Recipient.where(id: params[:id], user: current_user).first
   end
 
   # Only allow a list of trusted parameters through.
   def recipient_params
-    params.require(:recipient).permit(:phone, :email, :name, :notes)
+    params.require(:recipient).permit(:phone, :email, :name, :notes, :user_id, :active)
   end
 end

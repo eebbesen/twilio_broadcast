@@ -8,4 +8,10 @@ RSpec.describe Recipient, type: :model do
     expect(r.valid?).not_to be_truthy
     expect(r.errors[:phone]).to include("can't be blank")
   end
+
+  it 'validates presence of phone nil' do
+    r = Recipient.new(email: 'user@td.td.com', phone: nil)
+    expect(r.valid?).not_to be_truthy
+    expect(r.errors[:phone]).to include("can't be blank")
+  end
 end
