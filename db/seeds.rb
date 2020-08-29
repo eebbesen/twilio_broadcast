@@ -16,4 +16,3 @@ Recipient.create(phone: '0005551213', email: 'recipient3@tb.tb.moc', user: user)
 Recipient.create(phone: '0005551213', email: 'recipient3.2@tb.tb.moc', user: user2)
 Recipient.create(phone: '0005551214', email: 'recipient4@tb.tb.moc', user: user2)
 Recipient.create(phone: '0005551215', email: 'recipient5@tb.tb.moc', user: user2)
-

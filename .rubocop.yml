@@ -6,6 +6,14 @@ AllCops:
     - node_modules/**/*
     - db/schema.rb
 
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+
+Naming/VariableNumber:
+  Exclude:
+    - spec/**/*
+
 Style/Documentation:
   Exclude:
     - db/migrate/**/*
@@ -13,7 +21,3 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Exclude:
     - db/migrate/**/*
-
-Metrics/BlockLength:
-  Exclude:
-    - spec/**/*

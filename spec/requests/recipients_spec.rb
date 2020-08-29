@@ -146,7 +146,7 @@ RSpec.describe '/recipients', type: :request do
 
           begin
             patch recipient_url(recipient), params: { recipient: new_attributes }
-          rescue => e
+          rescue StandardError => e
             exception = e
           end
 
@@ -182,7 +182,7 @@ RSpec.describe '/recipients', type: :request do
 
         begin
           delete recipient_url(recipient)
-        rescue => e
+        rescue StandardError => e
           exception = e
         end
         expect(exception.message).to include("undefined method `destroy' for nil:NilClass")

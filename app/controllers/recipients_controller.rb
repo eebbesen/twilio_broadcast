@@ -25,7 +25,7 @@ class RecipientsController < ApplicationController
   # POST /recipients
   # POST /recipients.json
   def create
-    @recipient = Recipient.new(recipient_params.merge({user_id: current_user.id}))
+    @recipient = Recipient.new(recipient_params.merge({ user_id: current_user.id }))
 
     respond_to do |format|
       if @recipient.save
