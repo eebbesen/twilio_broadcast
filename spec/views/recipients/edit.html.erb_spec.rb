@@ -4,11 +4,13 @@ require 'rails_helper'
 
 RSpec.describe 'recipients/edit', type: :view do
   before(:each) do
+    user = create(:user_1)
     @recipient = assign(:recipient, Recipient.create!(
-                                      phone: 'MyString',
-                                      email: 'MyString',
-                                      name: 'MyString',
-                                      notes: 'MyString'
+                                      phone: '0008675309',
+                                      email: 'recipient@tb.tb.moc',
+                                      name: 'Omar Jay',
+                                      notes: 'Registered at Cardy Park 2019',
+                                      user_id: user.id
                                     ))
   end
 

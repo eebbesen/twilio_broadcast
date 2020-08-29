@@ -1,17 +1,21 @@
-<p>
-  <strong>Content:</strong>
-  <%= @message.content %>
-</p>
+<% if @message %>
+  <p>
+    <strong>Content:</strong>
+    <%= @message.content %>
+  </p>
 
-<p>
-  <strong>Status:</strong>
-  <%= @message.status %>
-</p>
+  <p>
+    <strong>Status:</strong>
+    <%= @message.status %>
+  </p>
 
-<p>
-  <strong>Sent at:</strong>
-  <%= @message.sent_at %>
-</p>
+  <p>
+    <strong>Sent at:</strong>
+    <%= @message.sent_at %>
+  </p>
 
-<%= link_to 'Edit', edit_message_path(@message), class: 'btn btn-primary' %>
-<%= link_to 'Cancel', messages_path, class: 'btn btn-secondary' %>
+  <%= link_to 'Edit', edit_message_path(@message), class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', messages_path, class: 'btn btn-secondary' %>
+<% else %>
+  <strong>Message not found</strong>
+<% end %>

@@ -15,17 +15,16 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe '/messages', type: :request do
-  # Message. As you add validations to Message, be sure to
-  # adjust the attributes here as well.
+  let(:user) { create(:user_1) }
+
   let(:valid_attributes) do
-    { content: 'hello from the texter' }
+    { content: 'hello from the texter', user_id: user.id }
   end
 
   let(:invalid_attributes) do
-    { conent: '' }
+    { conent: '', user_id: user.id }
   end
 
-  let(:user) { User.create(email: 'user@tb.tb.moc', password: 'Passw0rd!', password_confirmation: 'Passw0rd!') }
 
   context 'signed in user' do
     before(:each) do
@@ -35,7 +34,20 @@ RSpec.describe '/messages', type: :request do
       it 'renders a successful response' do
         Message.create! valid_attributes
         get messages_url
+
         expect(response).to be_successful
+        expect(response.body).to include(valid_attributes[:content])
+      end
+
+      it 'only gets message for current user' do
+        message_1 = create(:message_1, user: user)
+        message_2 = create(:message_2, user: create(:user_2))
+
+        get messages_url
+
+        expect(response).to be_successful
+        expect(response.body).to include(message_1.content)
+        expect(response.body).not_to include(message_2.content)
       end
     end
 
@@ -44,6 +56,14 @@ RSpec.describe '/messages', type: :request do
         message = Message.create! valid_attributes
         get message_url(message)
         expect(response).to be_successful
+      end
+
+      it "doesn't show messages for other users" do
+        message_2 = create(:message_2, user: create(:user_2))
+        get message_url(message_2)
+        expect(response).to be_successful
+        expect(response.body).to include('Message not found')
+        expect(response.body).not_to include(message_2.content)
       end
     end
 
@@ -59,6 +79,16 @@ RSpec.describe '/messages', type: :request do
         message = Message.create! valid_attributes
         get edit_message_url(message)
         expect(response).to be_successful
+      end
+
+      it "can't edit other user's message" do
+        message = create(:message_2, user: create(:user_2))
+
+        get edit_message_url(message)
+
+        expect(response).to be_successful
+        expect(response.body).not_to include(message.content)
+        expect(response.body).to include('Message not found')
       end
     end
 
@@ -112,7 +142,19 @@ RSpec.describe '/messages', type: :request do
           message.reload
           expect(response).to redirect_to(message_url(message))
         end
-      end
+
+        it "can't update other user's message" do
+          exception = nil
+          message = create(:message_2, user: create(:user_2))
+
+          begin
+            patch message_url(message), params: { message: new_attributes }
+          rescue => e
+            exception = e
+          end
+
+          expect(exception.message).to include("undefined method `update' for nil:NilClass")
+        end
 
       # this is redirecting and not 200ing
       # getting 200 when run in browser manually
@@ -124,6 +166,7 @@ RSpec.describe '/messages', type: :request do
       #     expect(response).to be_successful
       #   end
       # end
+      end
     end
 
     describe 'DELETE /destroy' do
@@ -138,6 +181,17 @@ RSpec.describe '/messages', type: :request do
         message = Message.create! valid_attributes
         delete message_url(message)
         expect(response).to redirect_to(messages_url)
+      end
+
+      it "can't delete other user's message" do
+        message = create(:message_2, user: create(:user_2))
+
+        begin
+          delete message_url(message)
+        rescue => e
+          exception = e
+        end
+        expect(exception.message).to include("undefined method `destroy' for nil:NilClass")
       end
     end
   end

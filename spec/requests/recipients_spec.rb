@@ -15,17 +15,15 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe '/recipients', type: :request do
-  # Recipient. As you add validations to Recipient, be sure to
-  # adjust the attributes here as well.
+  let(:user) { create(:user_1) }
+
   let(:valid_attributes) do
-    { phone: '651551212' }
+    { phone: '651551212', user_id: user.id }
   end
 
   let(:invalid_attributes) do
     { else: 'aaaaaaa' }
   end
-
-  let(:user) { User.create(email: 'user@tb.tb.moc', password: 'Passw0rd!', password_confirmation: 'Passw0rd!') }
 
   context 'signed in user' do
     before(:each) do
@@ -38,6 +36,17 @@ RSpec.describe '/recipients', type: :request do
         get recipients_url
         expect(response).to be_successful
       end
+
+      it 'only gets recipient for current user' do
+        recipient_1 = create(:recipient_1, user: user)
+        recipient_2 = create(:recipient_2, user: create(:user_2))
+
+        get recipients_url
+
+        expect(response).to be_successful
+        expect(response.body).to include(recipient_1.phone)
+        expect(response.body).not_to include(recipient_2.phone)
+      end
     end
 
     describe 'GET /show' do
@@ -45,6 +54,14 @@ RSpec.describe '/recipients', type: :request do
         recipient = Recipient.create! valid_attributes
         get recipient_url(recipient)
         expect(response).to be_successful
+      end
+
+      it "doesn't show recipients for other users" do
+        recipient_2 = create(:recipient_2, user: create(:user_2))
+        get recipient_url(recipient_2)
+        expect(response).to be_successful
+        expect(response.body).to include('Recipient not found')
+        expect(response.body).not_to include(recipient_2.phone)
       end
     end
 
@@ -60,6 +77,16 @@ RSpec.describe '/recipients', type: :request do
         recipient = Recipient.create! valid_attributes
         get edit_recipient_url(recipient)
         expect(response).to be_successful
+      end
+
+      it "can't edit another user's recipient" do
+        recipient = create(:recipient_2, user: create(:user_2))
+
+        get edit_recipient_url(recipient)
+
+        expect(response).to be_successful
+        expect(response.body).not_to include(recipient.phone)
+        expect(response.body).to include('Recipient not found')
       end
     end
 
@@ -112,6 +139,19 @@ RSpec.describe '/recipients', type: :request do
           recipient.reload
           expect(response).to redirect_to(recipient_url(recipient))
         end
+
+        it "can't update other user's recipient" do
+          exception = nil
+          recipient = create(:recipient_2, user: create(:user_2))
+
+          begin
+            patch recipient_url(recipient), params: { recipient: new_attributes }
+          rescue => e
+            exception = e
+          end
+
+          expect(exception.message).to include("undefined method `update' for nil:NilClass")
+        end
       end
 
       context 'with invalid parameters' do
@@ -135,6 +175,17 @@ RSpec.describe '/recipients', type: :request do
         recipient = Recipient.create! valid_attributes
         delete recipient_url(recipient)
         expect(response).to redirect_to(recipients_url)
+      end
+
+      it "can't delete other user's recipient" do
+        recipient = create(:recipient_2, user: create(:user_2))
+
+        begin
+          delete recipient_url(recipient)
+        rescue => e
+          exception = e
+        end
+        expect(exception.message).to include("undefined method `destroy' for nil:NilClass")
       end
     end
   end

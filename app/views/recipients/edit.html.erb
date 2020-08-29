@@ -1,5 +1,11 @@
 <h1>Editing Recipient</h1>
 
-<%= render 'form', recipient: @recipient %>
-<br>
-<%= link_to 'Back', recipients_path, class: 'btn btn-secondary' %>
+<% unless @recipient %>
+  <div id="error_explanation">
+    <h2>Recipient not found</h2>
+  </div>
+<% else %>
+  <%= render 'form', recipient: @recipient %>
+  <br>
+  <%= link_to 'Back', recipients_path, class: 'btn btn-secondary' %>
+<% end %>

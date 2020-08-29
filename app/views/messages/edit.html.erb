@@ -1,5 +1,11 @@
 <h1>Editing Message</h1>
 
-<%= render 'form', message: @message %>
+<% unless @message %>
+  <div id="error_explanation">
+    <h2>Message not found</h2>
+  </div>
+<% else %>
+  <%= render 'form', message: @message %>
 
-<%= link_to 'Cancel', messages_path, class: 'btn btn-secondary' %>
+  <%= link_to 'Cancel', messages_path, class: 'btn btn-secondary' %>
+<% end %>

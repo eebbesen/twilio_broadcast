@@ -5,9 +5,10 @@ require 'rails_helper'
 
 RSpec.describe 'messages/edit', type: :view do
   before(:each) do
+    user = create(:user_1)
     @message = assign(:message, Message.create!(
                                   content: 'MyString',
-                                  status: 'MyString'
+                                  user_id: user.id
                                 ))
   end
 
