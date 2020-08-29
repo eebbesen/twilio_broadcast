@@ -25,7 +25,6 @@ RSpec.describe '/messages', type: :request do
     { conent: '', user_id: user.id }
   end
 
-
   context 'signed in user' do
     before(:each) do
       sign_in user
@@ -149,23 +148,23 @@ RSpec.describe '/messages', type: :request do
 
           begin
             patch message_url(message), params: { message: new_attributes }
-          rescue => e
+          rescue StandardError => e
             exception = e
           end
 
           expect(exception.message).to include("undefined method `update' for nil:NilClass")
         end
 
-      # this is redirecting and not 200ing
-      # getting 200 when run in browser manually
-      # this was failing ever since scaffold generation
-      # context "with invalid parameters" do
-      #   it "renders a successful response (i.e. to display the 'edit' template)" do
-      #     message = Message.create! valid_attributes
-      #     patch message_url(message), params: { message: invalid_attributes }
-      #     expect(response).to be_successful
-      #   end
-      # end
+        # this is redirecting and not 200ing
+        # getting 200 when run in browser manually
+        # this was failing ever since scaffold generation
+        # context "with invalid parameters" do
+        #   it "renders a successful response (i.e. to display the 'edit' template)" do
+        #     message = Message.create! valid_attributes
+        #     patch message_url(message), params: { message: invalid_attributes }
+        #     expect(response).to be_successful
+        #   end
+        # end
       end
     end
 
@@ -188,7 +187,7 @@ RSpec.describe '/messages', type: :request do
 
         begin
           delete message_url(message)
-        rescue => e
+        rescue StandardError => e
           exception = e
         end
         expect(exception.message).to include("undefined method `destroy' for nil:NilClass")
