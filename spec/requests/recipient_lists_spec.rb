@@ -56,7 +56,6 @@ RSpec.describe '/recipient_lists', type: :request do
       end
 
       it "doesn't show recipient lists for other users" do
-        recipient_list_1 = create(:recipient_list_1, user: user)
         recipient_list_2 = create(:recipient_list_2, user: create(:user_2))
 
         get recipient_list_url(recipient_list_2)
