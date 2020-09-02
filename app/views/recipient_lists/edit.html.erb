@@ -7,7 +7,6 @@
 <% else %>
 
   <%= render 'form', recipient_list: @recipient_list %>
-
-  <%= link_to 'Show', @recipient_list %> |
-  <%= link_to 'Back', recipient_lists_path %>
+  <br/>
+  <%= link_to 'Back', recipient_lists_path, class: 'btn btn-secondary' %>
 <% end %>
