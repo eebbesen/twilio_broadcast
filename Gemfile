@@ -32,8 +32,8 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'bootstrap', '~> 5.0.0.alpha1'
 gem 'devise'
 gem 'jquery-rails'
-gem 'twilio-ruby'
 gem 'sprockets-rails'
+gem 'twilio-ruby'
 
 group :development, :test do
   gem 'bundle-audit'
