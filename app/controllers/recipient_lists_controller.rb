@@ -7,7 +7,7 @@ class RecipientListsController < ApplicationController
   # GET /recipient_lists
   # GET /recipient_lists.json
   def index
-    @recipient_lists = RecipientList.all.where(user: current_user)
+    @recipient_lists = RecipientList.where(user: current_user)
   end
 
   # GET /recipient_lists/1
