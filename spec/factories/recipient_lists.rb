@@ -2,7 +2,14 @@
 
 FactoryBot.define do
   factory :recipient_list do
-    name { 'MyString' }
-    notes { 'MyString' }
+    factory :recipient_list_1 do
+      name { 'Zoning' }
+      notes { 'residential and commercial zoning' }
+    end
+
+    factory :recipient_list_2 do
+      name { 'Commnity events' }
+      notes { 'events in the neighborhood' }
+    end
   end
 end

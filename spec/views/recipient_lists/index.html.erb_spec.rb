@@ -7,13 +7,13 @@ RSpec.describe 'recipient_lists/index', type: :view do
     user = create(:user_1)
     assign(:recipient_lists, [
              RecipientList.create!(
-               name: 'Name',
-               notes: 'Notes',
+               name: 'Zoning 1',
+               notes: 'Notes commercial',
                user_id: user.id
              ),
              RecipientList.create!(
-               name: 'Name',
-               notes: 'Notes',
+               name: 'Zoning 2',
+               notes: 'Zoning residential',
                user_id: user.id
              )
            ])
@@ -21,7 +21,7 @@ RSpec.describe 'recipient_lists/index', type: :view do
 
   it 'renders a list of recipient_lists' do
     render
-    assert_select 'tr>td', text: 'Name'.to_s, count: 2
-    assert_select 'tr>td', text: 'Notes'.to_s, count: 2
+    assert_select 'tr>td', text: 'Zoning 1'.to_s
+    assert_select 'tr>td', text: 'Zoning 2'.to_s
   end
 end

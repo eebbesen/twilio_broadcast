@@ -1,6 +1,13 @@
 <h1>Editing Recipient List</h1>
 
-<%= render 'form', recipient_list: @recipient_list %>
+<% unless @recipient_list %>
+  <div id="error_explanation">
+    <h2>Recipient list not found</h2>
+  </div>
+<% else %>
 
-<%= link_to 'Show', @recipient_list %> |
-<%= link_to 'Back', recipient_lists_path %>
+  <%= render 'form', recipient_list: @recipient_list %>
+
+  <%= link_to 'Show', @recipient_list %> |
+  <%= link_to 'Back', recipient_lists_path %>
+<% end %>

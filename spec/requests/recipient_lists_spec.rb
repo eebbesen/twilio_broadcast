@@ -35,6 +35,17 @@ RSpec.describe '/recipient_lists', type: :request do
         get recipient_lists_url
         expect(response).to be_successful
       end
+
+      it 'only gets recipient list for current user' do
+        recipient_list_1 = create(:recipient_list_1, user: user)
+        recipient_list_2 = create(:recipient_list_2, user: create(:user_2))
+
+        get recipient_lists_url
+
+        expect(response).to be_successful
+        expect(response.body).to include(recipient_list_1.name)
+        expect(response.body).not_to include(recipient_list_2.name)
+      end
     end
 
     describe 'GET /show' do
@@ -42,6 +53,17 @@ RSpec.describe '/recipient_lists', type: :request do
         recipient_list = RecipientList.create! valid_attributes
         get recipient_list_url(recipient_list)
         expect(response).to be_successful
+      end
+
+      it "doesn't show recipient lists for other users" do
+        recipient_list_1 = create(:recipient_list_1, user: user)
+        recipient_list_2 = create(:recipient_list_2, user: create(:user_2))
+
+        get recipient_list_url(recipient_list_2)
+
+        expect(response).to be_successful
+        expect(response.body).to include('Recipient list not found')
+        expect(response.body).not_to include(recipient_list_2.name)
       end
     end
 
@@ -57,6 +79,16 @@ RSpec.describe '/recipient_lists', type: :request do
         recipient_list = RecipientList.create! valid_attributes
         get edit_recipient_list_url(recipient_list)
         expect(response).to be_successful
+      end
+
+      it "can't edit another user's recipient list" do
+        recipient_list = create(:recipient_list_2, user: create(:user_2))
+
+        get edit_recipient_list_url(recipient_list)
+
+        expect(response).to be_successful
+        expect(response.body).not_to include(recipient_list.name)
+        expect(response.body).to include('Recipient list not found')
       end
     end
 
@@ -107,6 +139,19 @@ RSpec.describe '/recipient_lists', type: :request do
           recipient_list.reload
           expect(response).to redirect_to(recipient_list_url(recipient_list))
         end
+
+        it "can't update other user's recipient list" do
+          exception = nil
+          recipient_list = create(:recipient_list_2, user: create(:user_2))
+
+          begin
+            patch recipient_list_url(recipient_list), params: { recipient_list: new_attributes }
+          rescue StandardError => e
+            exception = e
+          end
+
+          expect(exception.message).to include("undefined method `update' for nil:NilClass")
+        end
       end
 
       context 'with invalid parameters' do
@@ -130,6 +175,17 @@ RSpec.describe '/recipient_lists', type: :request do
         recipient_list = RecipientList.create! valid_attributes
         delete recipient_list_url(recipient_list)
         expect(response).to redirect_to(recipient_lists_url)
+      end
+
+      it "can't delete other user's recipient" do
+        recipient_list = create(:recipient_list_2, user: create(:user_2))
+
+        begin
+          delete recipient_list_url(recipient_list)
+        rescue StandardError => e
+          exception = e
+        end
+        expect(exception.message).to include("undefined method `destroy' for nil:NilClass")
       end
     end
   end
