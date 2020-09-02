@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  resources :recipient_list_members
   resources :recipient_lists
   resources :messages
   resources :recipients

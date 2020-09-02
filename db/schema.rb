@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_02_102830) do
+ActiveRecord::Schema.define(version: 2020_09_02_120120) do
 
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -31,6 +31,15 @@ ActiveRecord::Schema.define(version: 2020_09_02_102830) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id"
+  end
+
+  create_table "recipient_list_members", force: :cascade do |t|
+    t.integer "recipient_id", null: false
+    t.integer "recipient_list_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["recipient_id"], name: "index_recipient_list_members_on_recipient_id"
+    t.index ["recipient_list_id"], name: "index_recipient_list_members_on_recipient_list_id"
   end
 
   create_table "recipient_lists", force: :cascade do |t|
@@ -64,4 +73,6 @@ ActiveRecord::Schema.define(version: 2020_09_02_102830) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "recipient_list_members", "recipient_lists"
+  add_foreign_key "recipient_list_members", "recipients"
 end

@@ -8,4 +8,5 @@ class User < ApplicationRecord
   has_many :messages
   has_many :recipients
   has_many :recipient_lists
+  has_many :recipient_list_members
 end
