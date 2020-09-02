@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Recipient Lists</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Notes</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @recipient_lists.each do |recipient_list| %>
+      <tr>
+        <td><%= recipient_list.name %></td>
+        <td><%= recipient_list.notes %></td>
+        <td><%= link_to 'Show', recipient_list %></td>
+        <td><%= link_to 'Edit', edit_recipient_list_path(recipient_list) %></td>
+        <td><%= link_to 'Destroy', recipient_list, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Recipient List', new_recipient_list_path %>
