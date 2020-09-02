@@ -2,7 +2,9 @@
 
 FactoryBot.define do
   factory :recipient_list_member do
-    recipient { nil }
-    recipient_list { nil }
+    factory :rlm_one do
+      recipient { recipient_1 }
+      recipient_list { recipient_list_1 }
+    end
   end
 end
