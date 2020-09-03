@@ -18,13 +18,13 @@ RSpec.describe Message, type: :model do
 
     it 'is true when associated with list' do
       @m = create(:message_1, user: @u, recipient_lists: [@rl])
-      expect(@m.recipient_list_active? @rl.id).to be_truthy
+      expect(@m.recipient_list_active?(@rl.id)).to be_truthy
     end
 
     it 'is false when not associated with list' do
       rl_two = create(:recipient_list_2, user: @u, recipients: [@r], id: 1001)
       @m = create(:message_1, user: @u, recipient_lists: [@rl])
-      expect(@m.recipient_list_active? rl_two.id).to be_falsey
+      expect(@m.recipient_list_active?(rl_two.id)).to be_falsey
     end
   end
 end

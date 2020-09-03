@@ -12,5 +12,4 @@ class Message < ApplicationRecord
   def recipient_list_active?(recipient_list_id)
     !recipient_lists.where(id: recipient_list_id).count.zero?
   end
-
 end
