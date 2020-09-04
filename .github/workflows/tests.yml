@@ -4,41 +4,57 @@ env:
 name: Rails tests
 on: [pull_request]
 jobs:
-  rubocop:
-    name: rubocop
+  build:
     runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-      - name: install rubocop
-        run: gem install rubocop
-      - name: run rubocop
-        run: rubocop
 
-  rspec_tests:
-    name: rspec tests
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-      - name: install bundler and bundle install
-        run: |
-          gem install bundler
-          bundle install
-      - name: project setup
-        run: |
-           yarn install --check-files
-           bin/rails webpacker:install
-           bin/rake db:setup
-      - name: run tests
-        run: bundle exec rake
-      - name: Upload coverage results
-        uses: actions/upload-artifact@master
-        if: always()
-        with:
-          name: coverage-report
-          path: coverage
+    services:
+      postgres:
+        image: postgres:12.2
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+
+    rubocop:
+      name: rubocop
+      steps:
+        - uses: actions/checkout@v1
+        - uses: actions/setup-ruby@v1
+          with:
+            ruby-version: ${{ env.RUBY_VERSION }}
+        - name: install rubocop
+          run: gem install rubocop
+        - name: run rubocop
+          run: rubocop
+
+    rspec_tests:
+      name: rspec tests
+      env:
+        PGHOST: 127.0.0.1
+        PGUSER: postgres
+        RAILS_ENV: test
+      steps:
+        - uses: actions/checkout@v1
+        - uses: actions/setup-ruby@v1
+          with:
+            ruby-version: ${{ env.RUBY_VERSION }}
+        - name: install bundler and bundle install
+          run: |
+            gem install bundler
+            bundle install
+        - name: project setup
+          run: |
+             yarn install --check-files
+             bin/rails webpacker:install
+             bin/rake db:setup
+        - name: run tests
+          run: bundle exec rake
+        - name: Upload coverage results
+          uses: actions/upload-artifact@master
+          if: always()
+          with:
+            name: coverage-report
+            path: coverage
