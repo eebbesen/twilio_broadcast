@@ -6,7 +6,7 @@
 
   <p>
     <strong>Status:</strong>
-    <%= @message.status %>
+    <%= @message.status || 'Unsent' %>
   </p>
 
   <p>
@@ -16,6 +16,17 @@
 
   <%= link_to 'Edit', edit_message_path(@message), class: 'btn btn-primary' %>
   <%= link_to 'Cancel', messages_path, class: 'btn btn-secondary' %>
+  <br/>
+
+  <h3>Recipent Lists</h3>
+  <% RecipientList.where(user: @message.user).each do |rl| %>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="check_<%= rl.id %>" disabled <%= 'checked' if @message.recipient_list_active?(rl.id) %> >
+      <label class="form-check-label" for="check_<%= rl.id %>">
+        <%= rl.name %>
+      </label>
+    </div>
+  <% end %>
 <% else %>
   <strong>Message not found</strong>
 <% end %>

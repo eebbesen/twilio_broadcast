@@ -7,4 +7,6 @@ class User < ApplicationRecord
   devise :database_authenticatable, :recoverable, :rememberable, :validatable
   has_many :messages
   has_many :recipients
+  has_many :recipient_lists
+  has_many :recipient_list_members
 end

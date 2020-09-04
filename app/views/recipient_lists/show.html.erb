@@ -1,0 +1,39 @@
+<% if @recipient_list %>
+  <p>
+    <strong>Name:</strong>
+    <%= @recipient_list.name %>
+  </p>
+
+  <p>
+    <strong>Notes:</strong>
+    <%= @recipient_list.notes %>
+  </p>
+  <br/>
+
+  <table class="table">
+    <h3>Members</h3>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @recipient_list.recipients.each do |recipient| %>
+        <tr>
+          <td><%= link_to recipient.name || '', recipient %></td>
+          <td><%= link_to recipient.phone, recipient %></td>
+          <td><%= link_to recipient.email || '', recipient %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= link_to 'Edit', edit_recipient_list_path(@recipient_list), class: 'btn btn-primary'  %>
+  <%= link_to 'Back', recipient_lists_path, class: 'btn btn-secondary' %>
+<% else %>
+  <strong>Recipient list not found</strong>
+<% end %>

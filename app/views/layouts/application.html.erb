@@ -11,16 +11,31 @@
 
   <body>
     <div class="container">
-      <% if user_signed_in? %>
-        <div class="container-fluid">
+      <div class="container-fluid">
+        <li class="btn menu-btn">
+          <%= link_to 'Messages', messages_path, id: 'messages-btn' %>
+        </li>
+        <li class="btn menu-btn">
+          <%= link_to 'Recipients', recipients_path, id: 'recipients-btn' %>
+        </li>
+        <li class="btn menu-btn">
+          <%= link_to 'Recipient Lists', recipient_lists_path, id: 'recipient-lists-btn' %>
+        </li>
+        <% if user_signed_in? %>
           <li class="btn logout-btn-wrapper">
             <%= link_to 'Logout', destroy_user_session_path, method: :delete, id: 'logout-btn' %>
           </li>
-        </div>
+        <% end %>
+      </div>
+      <% if notice %>
+        <p class="notice"><%= notice %></p>
       <% end %>
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
-      <%= yield %>
+      <% if alert %>
+        <p class="alert"><%= alert %></p>
+      <% end %>
+      <div class="container">
+        <%= yield %>
+      </div>
     </div>
   </body>
 </html>

@@ -1,0 +1,26 @@
+<h1>Recipient Lists</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Notes</th>
+      <th>Recipients</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @recipient_lists.each do |recipient_list| %>
+      <tr>
+        <td><%= link_to recipient_list.name, recipient_list %></td>
+        <td><%= recipient_list.notes %></td>
+        <td><%= recipient_list.recipients.size %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Recipient List', new_recipient_list_path %>
