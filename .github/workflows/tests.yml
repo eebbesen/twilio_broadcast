@@ -4,28 +4,36 @@ env:
 name: Rails tests
 on: [pull_request]
 jobs:
-  # Label of the container job
-  container-job:
-    # Containers must run in Linux based operating systems
-    runs-on: ubuntu-latest
-    # Docker Hub image that `container-job` executes in
-    container: node:10.18-jessie
+  build:
 
-    # Service containers to run with `container-job`
+    runs-on: ubuntu-latest
+    container: circleci/ruby:2.6.3-node-browsers-legacy
+
+    env:
+      PGHOST: postgres
+      PGUSER: administrate
+      RAILS_ENV: test
+
     services:
-      # Label used to access the service container
       postgres:
-        # Docker Hub image
-        image: postgres
-        # Provide the password for postgres
+        image: postgres:10.1-alpine
         env:
-          POSTGRES_PASSWORD: postgres
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          POSTGRES_USER: administrate
+          POSTGRES_DB: ruby25
+          POSTGRES_PASSWORD: ""
+        ports:
+        - 5432:5432
+        # Add a health check
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    # This Docker file changes sets USER to circleci instead of using the default user, so we need to update file permissions for this image to work on GH Actions.
+    # See https://docs.github.com/actions/reference/virtual-environments-for-github-hosted-runners#docker-container-filesystem
+    - name: Setup file system permissions
+      run: sudo chmod -R 777 $GITHUB_WORKSPACE /github /__w/_temp
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: bundle install --path vendor/bundle
 
     # steps:
     #   name: rubocop
