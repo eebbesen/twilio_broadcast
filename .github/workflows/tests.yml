@@ -4,52 +4,61 @@ env:
 name: Rails tests
 on: [pull_request]
 jobs:
-  build: ubuntu-18.04
+  # Label of the container job
+  container-job:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    # Docker Hub image that `container-job` executes in
+    container: node:10.18-jessie
 
-  services:
-    postgres:
-      image: postgres:11.6-alpine
-      env:
-        POSTGRES_PASSWORD: password
-      ports:
-        - 5432:5432
-      # needed because the postgres container does not provide a healthcheck
-      options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
   steps:
     name: rubocop
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-      - name: install rubocop
-        run: gem install rubocop
-      - name: run rubocop
-        run: rubocop
+    - uses: actions/checkout@v2
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+    - name: install rubocop
+      run: gem install rubocop
+    - name: run rubocop
+      run: rubocop
 
-    name: rspec tests
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-      - name: install bundler and bundle install
-        run: |
-          gem install bundler
-          bundle install
-      - name: project setup
-        run: |
-           yarn install --check-files
-           bin/rails webpacker:install
-           bin/rake db:setup
-      - name: run tests
-        run: bundle exec rake
-      - name: Upload coverage results
-        uses: actions/upload-artifact@master
-        if: always()
-        with:
-          name: coverage-report
-          path: coverage
+    # name: rspec tests
+    # runs-on: ubuntu-18.04
+    # steps:
+    #   - uses: actions/checkout@v1
+    #   - uses: actions/setup-ruby@v1
+    #     with:
+    #       ruby-version: ${{ env.RUBY_VERSION }}
+    #   - name: install bundler and bundle install
+    #     run: |
+    #       gem install bundler
+    #       bundle install
+    #   - name: project setup
+    #     run: |
+    #        yarn install --check-files
+    #        bin/rails webpacker:install
+    #        bin/rake db:setup
+    #   - name: run tests
+    #     run: bundle exec rake
+    #   - name: Upload coverage results
+    #     uses: actions/upload-artifact@master
+    #     if: always()
+    #     with:
+    #       name: coverage-report
+    #       path: coverage
