@@ -8,7 +8,7 @@ ruby '2.7.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -32,9 +32,12 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'bootstrap', '~> 5.0.0.alpha1'
 gem 'devise'
 gem 'jquery-rails'
-gem 'pg'
 gem 'sprockets-rails'
 gem 'twilio-ruby'
+
+group :development, :production do
+  gem 'pg'
+end
 
 group :development, :test do
   gem 'bundle-audit'
@@ -56,6 +59,10 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+end
+
+group :test do
+  gem 'sqlite3', '~> 1.4'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
