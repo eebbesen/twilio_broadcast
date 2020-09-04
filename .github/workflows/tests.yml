@@ -31,7 +31,12 @@ jobs:
     # See https://docs.github.com/actions/reference/virtual-environments-for-github-hosted-runners#docker-container-filesystem
     - name: Setup file system permissions
       run: sudo chmod -R 777 $GITHUB_WORKSPACE /github /__w/_temp
+
+    # checkout repo
     - uses: actions/checkout@v2
+
+    - name: install bundler
+      run: gem install bundler
     - name: Install dependencies
       run: bundle install --path vendor/bundle
 
