@@ -7,8 +7,6 @@ ruby '2.7.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4'
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -35,6 +33,10 @@ gem 'jquery-rails'
 gem 'sprockets-rails'
 gem 'twilio-ruby'
 
+group :production do
+  gem 'pg'
+end
+
 group :development, :test do
   gem 'bundle-audit'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
@@ -46,6 +48,7 @@ group :development, :test do
   gem 'rubocop'
   gem 'selenium-webdriver'
   gem 'simplecov'
+  gem 'sqlite3', '~> 1.4'
 end
 
 group :development do
