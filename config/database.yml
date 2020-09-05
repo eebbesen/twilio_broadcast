@@ -12,9 +12,8 @@ development:
   # host: localhost
 
 test:
-  database: db/test.sqlite3
-  adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  database: minutesmaid_test
+  host: localhost
   timeout: 5000
 
 production:

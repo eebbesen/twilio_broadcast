@@ -42,10 +42,8 @@ jobs:
       run: bundle install --path vendor/bundle
 
     # linting
-    # - name: rubocop install
-    #   run: gem install rubocop
-    # - name: rubocop run
-    #   run: rubocop
+    - name: rubocop run
+      run: bundle exec rubocop
 
     # tests
     - name: db setup
