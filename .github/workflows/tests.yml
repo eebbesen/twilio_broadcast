@@ -37,6 +37,16 @@ jobs:
     #     RAILS_ENV: test
     steps:
       - uses: actions/checkout@v2
+
+      - name: cache gems
+        uses: action/cache@v2
+        env:
+          cache-name: cache-gems
+        with:
+          path: ~/.rubygems
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
