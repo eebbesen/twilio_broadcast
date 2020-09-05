@@ -12,6 +12,7 @@ development:
   # host: localhost
 
 test:
+  <<: *default
   database: minutesmaid_test
   host: localhost
   timeout: 5000
