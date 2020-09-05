@@ -17,7 +17,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-
     rubocop:
       name: rubocop
       steps:
