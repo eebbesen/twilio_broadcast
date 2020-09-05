@@ -1,5 +1,6 @@
 env:
   RUBY_VERSION: 2.7
+  RAILS_ENV: test
 
 name: Rails tests
 on: [pull_request]
