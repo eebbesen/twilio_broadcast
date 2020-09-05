@@ -35,10 +35,23 @@ jobs:
     # checkout repo
     - uses: actions/checkout@v2
 
+    # dependencies
     - name: install bundler
       run: gem install bundler
     - name: Install dependencies
       run: bundle install --path vendor/bundle
+
+    # linting
+    - name: rubocop install
+      run: gem install rubocop
+    - name: rubocop run
+      run: rubocop
+
+    # tests
+    - name: db setup
+      run: bundle exec rake db:setup
+    - name: tests
+      run: bundle exec rspec
 
     # steps:
     #   name: rubocop
