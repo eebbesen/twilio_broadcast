@@ -7,7 +7,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    container: circleci/ruby:2.6.3-node-browsers-legacy
+    container: circleci/ruby:2.7.1-node-browsers-legacy
 
     env:
       PGHOST: postgres
