@@ -2,20 +2,22 @@ env:
   RUBY_VERSION: 2.7
 
 name: Rails tests
-on: [pull_request, push]
+on: [pull_request]
 jobs:
   build:
     runs-on: ubuntu-18.04
 
-    # services:
-    #   db:
-    #     image: postgres:12.2
-    #     ports: ["5432:5432"]
-    #     options: >-
-    #       --health-cmd pg_isready
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
+    services:
+      db:
+        image: postgres:12.2
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     # steps:
     #   - uses: actions/checkout@v1
@@ -35,6 +37,16 @@ jobs:
     #     RAILS_ENV: test
     steps:
       - uses: actions/checkout@v2
+
+      - name: cache gems
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-gems
+        with:
+          path: ~/.rubygems
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}

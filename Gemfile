@@ -30,12 +30,9 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'bootstrap', '~> 5.0.0.alpha1'
 gem 'devise'
 gem 'jquery-rails'
+gem 'pg'
 gem 'sprockets-rails'
 gem 'twilio-ruby'
-
-group :production do
-  gem 'pg'
-end
 
 group :development, :test do
   gem 'bundle-audit'
@@ -48,7 +45,6 @@ group :development, :test do
   gem 'rubocop'
   gem 'selenium-webdriver'
   gem 'simplecov'
-  gem 'sqlite3', '~> 1.4'
 end
 
 group :development do
