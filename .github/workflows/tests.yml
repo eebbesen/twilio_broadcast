@@ -23,22 +23,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    # steps:
-    #   - uses: actions/checkout@v1
-    #   - uses: actions/setup-ruby@v1
-    #     with:
-    #       ruby-version: ${{ env.RUBY_VERSION }}
-    #   - name: install rubocop
-    #     run: gem install rubocop
-    #   - name: run rubocop
-    #     run: rubocop
-
-    # rspec_tests:
-    #   name: rspec tests
-    #   env:
-    #     PGHOST: 127.0.0.1
-    #     PGUSER: postgres
-    #     RAILS_ENV: test
     steps:
       - uses: actions/checkout@v2
 
