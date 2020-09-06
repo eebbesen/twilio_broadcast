@@ -26,7 +26,6 @@ Bundler.require(*Rails.groups)
 module TwilioBroadcast
   class Application < Rails::Application
     Dotenv::Railtie.overload if %w(test development).include? Rails.env
-    Dotenv::Railtie.load unless %w(test development).include? Rails.env
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
