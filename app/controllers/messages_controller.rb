@@ -64,8 +64,7 @@ class MessagesController < ApplicationController
 
   # POST /messages/1
   def send_message
-    recipients = @message.recipient_lists.map(&:recipients).flatten.uniq
-    recipients.collect do |r|
+    @message.recipient_lists.map(&:recipients).flatten.uniq.collect do |r|
       result = TwilioTextMessenger.new(@message.content).call(r.phone)
       MessageRecipient.create(
         message: @message,

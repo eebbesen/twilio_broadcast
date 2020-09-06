@@ -39,7 +39,7 @@ RSpec.describe '/messages', type: :request do
           m = create(:message_1, user: user, recipient_lists: [rl])
 
           VCR.use_cassette('twilio_post_message_spec') do
-            res = post send_message_url(m)
+            post send_message_url(m)
             expect(response).to be_successful
           end
 
