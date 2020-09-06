@@ -16,6 +16,7 @@ require 'action_view/railtie'
 require 'action_cable/engine'
 require 'sprockets/railtie'
 # require "rails/test_unit/railtie"
+require 'dotenv/load'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -24,6 +25,8 @@ Bundler.require(*Rails.groups)
 ##
 module TwilioBroadcast
   class Application < Rails::Application
+    Dotenv::Railtie.overload if %w(test development).include? Rails.env
+    Dotenv::Railtie.load unless %w(test development).include? Rails.env
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
