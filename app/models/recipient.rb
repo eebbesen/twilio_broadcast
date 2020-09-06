@@ -8,4 +8,8 @@ class Recipient < ApplicationRecord
   has_many :recipient_lists, through: :recipient_list_members
   has_many :message_recipients
   has_many :messages, through: :message_recipients
+
+  def on_recipient_list?(recipient_list_id)
+    recipient_list_ids.include? recipient_list_id
+  end
 end
