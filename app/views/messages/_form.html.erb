@@ -19,14 +19,8 @@
   <br/>
 
   <h3>Recipent Lists</h3>
-  <% RecipientList.where(user: @message.user).each do |rl| %>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="" id="check_<%= rl.id %>" <%= 'checked' if @message.recipient_list_active?(rl.id) %> >
-      <label class="form-check-label" for="check_<%= rl.id %>">
-        <%= rl.name %>
-      </label>
-    </div>
-  <% end %>
+  <!-- we may want to do this more manually to accommodate styling -->
+  <%= form.collection_check_boxes :recipient_list_ids, current_user.recipient_lists, :id, :name, {}, class: 'col-sm-10 form-check-input'  %>
   <br/>
 
   <div class="actions">
