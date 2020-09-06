@@ -2,7 +2,11 @@ env:
   RUBY_VERSION: 2.7
 
 name: Rails tests
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - master
 jobs:
   build:
     runs-on: ubuntu-18.04
@@ -54,11 +58,13 @@ jobs:
         run: |
           gem install bundler
           bundle install
+
       - name: project setup
         run: |
            yarn install --check-files
            bin/rails webpacker:install
            bin/rake db:setup
+
       - name: run tests
         run: bundle exec rspec
       - name: Upload coverage results
@@ -67,3 +73,8 @@ jobs:
         with:
           name: coverage-report
           path: coverage
+
+      - name: rubocop
+        run: |
+          gem install rubocop
+          bundle exec rubocop
