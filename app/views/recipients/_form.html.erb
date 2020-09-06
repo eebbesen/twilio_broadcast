@@ -36,6 +36,11 @@
     <%= form.label :active, class: 'col-sm-2 col-form-label form-check-label' %>
   </div>
 
+  <h3>Recipent Lists</h3>
+  <!-- we may want to do this more manually to accommodate styling -->
+  <%= form.collection_check_boxes :recipient_list_ids, current_user.recipient_lists, :id, :name, {}, class: 'col-sm-10 form-check-input'  %>
+  <br/>
+
   <div class="actions">
     <%= form.submit class: 'btn btn-primary' %>
   </div>
