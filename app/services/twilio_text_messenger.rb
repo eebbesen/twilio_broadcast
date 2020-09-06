@@ -9,8 +9,7 @@ class TwilioTextMessenger
   end
 
   def call(recipient)
-    client = Twilio::REST::Client.new
-    client.messages.create(
+    Twilio::REST::Client.new.messages.create(
       from: ENV['TWILIO_FROM_PHONE_NUMBER'],
       to: recipient,
       body: content

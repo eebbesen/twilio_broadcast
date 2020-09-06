@@ -22,13 +22,34 @@ RSpec.describe '/messages', type: :request do
   end
 
   let(:invalid_attributes) do
-    { conent: '', user_id: user.id }
+    { content: '', user_id: user.id }
   end
 
   context 'signed in user' do
     before(:each) do
       sign_in user
     end
+
+    describe 'POST /send' do
+      it 'sends successfully to all recipients' do
+        expect do
+          r1 = create(:recipient_1, phone: '15005550006', user: user)
+          r2 = create(:recipient_2, phone: '15005550007', user: user)
+          rl = create(:recipient_list_1, user: user, recipients: [r1, r2])
+          m = create(:message_1, user: user, recipient_lists: [rl])
+
+          VCR.use_cassette('twilio_post_message_spec') do
+            res = post send_message_url(m)
+            expect(response).to be_successful
+          end
+
+          m.reload
+
+          expect(m.message_recipients.count).to eq(2)
+        end.to change(MessageRecipient, :count).by(2)
+      end
+    end
+
     describe 'GET /index' do
       it 'renders a successful response' do
         Message.create! valid_attributes

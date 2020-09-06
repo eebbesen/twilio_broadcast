@@ -2,7 +2,7 @@
 
 ##
 class MessagesController < ApplicationController
-  before_action :set_message, only: %i[show edit update destroy]
+  before_action :set_message, only: %i[show edit update destroy send_message]
 
   # GET /messages
   # GET /messages.json
@@ -59,6 +59,21 @@ class MessagesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to messages_url, notice: 'Message was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  # POST /messages/1
+  def send_message
+    recipients = @message.recipient_lists.map(&:recipients).flatten.uniq
+    recipients.collect do |r|
+      result = TwilioTextMessenger.new(@message.content).call(r.phone)
+      MessageRecipient.create(
+        message: @message,
+        recipient: r,
+        status: result.status,
+        error_code: result.error_code,
+        error_message: result.error_message
+      )
     end
   end
 

@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_02_151052) do
+ActiveRecord::Schema.define(version: 2020_09_06_220220) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -38,6 +41,9 @@ ActiveRecord::Schema.define(version: 2020_09_02_151052) do
     t.integer "recipient_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "status"
+    t.integer "error_code"
+    t.string "error_message"
     t.index ["message_id"], name: "index_message_recipients_on_message_id"
     t.index ["recipient_id"], name: "index_message_recipients_on_recipient_id"
   end
