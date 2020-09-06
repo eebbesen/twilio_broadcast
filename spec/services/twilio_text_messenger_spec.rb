@@ -8,7 +8,7 @@ require 'rails_helper'
 RSpec.describe TwilioTextMessenger do
   # uses the valid Twilio magic to number
   it 'sends successful message' do
-    VCR.use_cassette("twilio_success") do
+    VCR.use_cassette('twilio_success') do
       r = TwilioTextMessenger.new('test message').call('+15005550006')
 
       expect(r.status).to eq('queued')
@@ -19,7 +19,7 @@ RSpec.describe TwilioTextMessenger do
 
   # uses the invalid Twilio magic to number
   it 'sends message to invalid number' do
-    VCR.use_cassette("twilio_invalid") do
+    VCR.use_cassette('twilio_invalid') do
       r = TwilioTextMessenger.new('test message').call('+15005550001')
     rescue StandardError => e
       expect(r).to be_nil
@@ -31,7 +31,7 @@ RSpec.describe TwilioTextMessenger do
 
   # uses the blocked Twilio magic to number
   it 'sends message to blocked number' do
-    VCR.use_cassette("twilio_blocked") do
+    VCR.use_cassette('twilio_blocked') do
       r = TwilioTextMessenger.new('test message').call('+15005550004')
     rescue StandardError => e
       expect(r).to be_nil
@@ -43,7 +43,7 @@ RSpec.describe TwilioTextMessenger do
 
   # uses the Twilio magic to number that can't receive text messages
   it "sends message to number that can't receive text messages" do
-    VCR.use_cassette("twilio_cannot_receive") do
+    VCR.use_cassette('twilio_cannot_receive') do
       r = TwilioTextMessenger.new('test message').call('+15005550009')
     rescue StandardError => e
       expect(r).to be_nil
