@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 ##
+# This calls the real Twilio API
+# make sure you have test credentials or you will incur Twilio charges
 require 'rails_helper'
 
 RSpec.describe TwilioTextMessenger do

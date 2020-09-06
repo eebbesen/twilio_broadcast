@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'messages/edit', type: :view do
   before(:each) do
     user = create(:user_1)
-    view.stub(:current_user) { user }
+    allow(view).to receive(:current_user).and_return(user)
     @message = assign(:message, Message.create!(
                                   content: 'MyString',
                                   user_id: user.id
