@@ -14,15 +14,16 @@
     <%= @message.sent_at %>
   </p>
 
-  <% unless @message.status == 'Sent' %>
+  <% unless @message.sent? %>
     <%= form_with(url: "#{@message.id}/send_message", method: 'post', local: true) do |form| %>
       <div class="actions">
         <%= form.submit 'Send', class: 'btn btn-primary' %>
       </div>
     <% end %>
+    <%= link_to 'Edit', edit_message_path(@message), class: 'btn btn-primary' %>
   <% end %>
-  <%= link_to 'Edit', edit_message_path(@message), class: 'btn btn-primary' %>
-  <%= link_to 'Cancel', messages_path, class: 'btn btn-secondary' %>
+
+  <%= link_to @message.sent? ? 'Back' : 'Cancel', messages_path, class: 'btn btn-secondary' %>
   <br/>
 
   <h3>Recipent Lists</h3>
@@ -36,7 +37,7 @@
   <% end %>
   <br/>
 
-  <% if @message.status == 'Sent' %>
+  <% if @message.sent? %>
     <h3>Recipents</h3>
     <table class="table">
       <thead>

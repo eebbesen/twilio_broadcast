@@ -65,11 +65,13 @@ class MessagesController < ApplicationController
   # POST /messages/1
   def send_message
     respond_to do |format|
-      notice = if @message.status == 'Sent'
+      notice = if @message.sent?
                  'Message already sent'
-               else
+               elsif @message.recipients?
                  send_recipients
                  'Message sent'
+               else
+                 'Please select recipients'
                end
       format.html { redirect_to @message, notice: notice }
     end

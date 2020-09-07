@@ -12,4 +12,12 @@ class Message < ApplicationRecord
   def recipient_list_active?(recipient_list_id)
     !recipient_lists.where(id: recipient_list_id).count.zero?
   end
+
+  def sent?
+    %w[Sent queued].include? status
+  end
+
+  def recipients?
+    recipient_lists.find { |rl| break rl.recipients.count if rl.recipients.count > 0 }
+  end
 end
