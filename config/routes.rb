@@ -10,5 +10,5 @@ Rails.application.routes.draw do
 
   root to: 'messages#index'
 
-  post 'messages/:id/send', to: 'messages#send_message', as: :send_message
+  post 'messages/:id/send_message', to: 'messages#send_message', as: :send_message
 end

@@ -64,19 +64,48 @@ class MessagesController < ApplicationController
 
   # POST /messages/1
   def send_message
-    @message.recipient_lists.map(&:recipients).flatten.uniq.collect do |r|
-      result = TwilioTextMessenger.new(@message.content).call(r.phone)
-      MessageRecipient.create(
-        message: @message,
-        recipient: r,
-        status: result.status,
-        error_code: result.error_code,
-        error_message: result.error_message
-      )
+    respond_to do |format|
+      notice = if @message.status == 'Sent'
+                 'Message already sent'
+               else
+                 send_recipients
+                 'Message sent'
+               end
+      format.html { redirect_to @message, notice: notice }
     end
   end
 
   private
+
+  def send_recipients
+    @message.recipient_lists.map(&:recipients).flatten.uniq.each do |r|
+      send_recipient(r)
+    end
+    @message.update(status: 'Sent', sent_at: Time.now)
+  end
+
+  def send_recipient(recipient)
+    begin
+      result = TwilioTextMessenger.new(@message.content).call(recipient.phone)
+    rescue Twilio::REST::RestError => e
+      store_recipient_send(recipient, { status: 'Failed', error_code: e.code, error_message: e.message })
+      puts "Error sending to #{recipient.phone} for #{@message.id}: #{e.message}"
+      return
+    end
+    store_recipient_send(recipient, { status: result.status,
+                                      error_code: result.error_code,
+                                      error_message: result.error_message })
+  end
+
+  def store_recipient_send(recipient, details = {})
+    MessageRecipient.create(
+      message: @message,
+      recipient: recipient,
+      status: details[:status],
+      error_code: details[:error_code],
+      error_message: details[:error_message]
+    )
+  end
 
   # User scope messages
   def set_message

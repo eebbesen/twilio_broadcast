@@ -14,6 +14,13 @@
     <%= @message.sent_at %>
   </p>
 
+  <% unless @message.status == 'Sent' %>
+    <%= form_with(url: "#{@message.id}/send_message", method: 'post', local: true) do |form| %>
+      <div class="actions">
+        <%= form.submit 'Send', class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+  <% end %>
   <%= link_to 'Edit', edit_message_path(@message), class: 'btn btn-primary' %>
   <%= link_to 'Cancel', messages_path, class: 'btn btn-secondary' %>
   <br/>
@@ -26,6 +33,33 @@
         <%= rl.name %>
       </label>
     </div>
+  <% end %>
+  <br/>
+
+  <% if @message.status == 'Sent' %>
+    <h3>Recipents</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Email</th>
+          <th>Name</th>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @message.message_recipients.each do |mr| %>
+          <tr>
+            <td><%= link_to mr.recipient.phone, mr.recipient %></td>
+            <td><%= mr.status %></td>
+            <td><%= mr.recipient.email %></td>
+            <td><%= mr.recipient.name %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   <% end %>
 <% else %>
   <strong>Message not found</strong>
