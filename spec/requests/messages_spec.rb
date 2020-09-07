@@ -30,7 +30,7 @@ RSpec.describe '/messages', type: :request do
       sign_in user
     end
 
-    describe 'POST /send' do
+    describe 'POST /send_message' do
       it 'sends successfully to all recipients' do
         expect do
           r1 = create(:recipient_1, phone: '15005550006', user: user)
@@ -41,6 +41,8 @@ RSpec.describe '/messages', type: :request do
           VCR.use_cassette('twilio_post_message_spec') do
             post send_message_url(m)
             expect(response).to redirect_to(message_url(m))
+            follow_redirect!
+            expect(response.body).to include('Message sent')
           end
 
           m.reload
@@ -49,6 +51,39 @@ RSpec.describe '/messages', type: :request do
           expect(m.status).to eq('Sent')
           expect(m.sent_at).not_to be_nil
         end.to change(MessageRecipient, :count).by(2)
+      end
+
+      it "doesn't send if recipient_list with no recipients" do
+        rl = create(:recipient_list_1, user: user)
+        m = create(:message_1, user: user, recipient_lists: [rl])
+
+        expect do
+          post send_message_url(m)
+
+          expect(response).to redirect_to(message_url(m))
+          follow_redirect!
+          expect(response.body).to include('Please select recipients')
+
+          m.reload
+          expect(m.status).to be_nil
+          expect(m.sent_at).to be_nil
+        end.to change(MessageRecipient, :count).by(0)
+      end
+
+      it "doesn't send if with no recipient_lists" do
+        m = create(:message_1, user: user)
+
+        expect do
+          post send_message_url(m)
+
+          expect(response).to redirect_to(message_url(m))
+          follow_redirect!
+          expect(response.body).to include('Please select recipients')
+
+          m.reload
+          expect(m.status).to be_nil
+          expect(m.sent_at).to be_nil
+        end.to change(MessageRecipient, :count).by(0)
       end
     end
 
