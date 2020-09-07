@@ -65,9 +65,7 @@ class MessagesController < ApplicationController
   # POST /messages/1
   def send_message
     respond_to do |format|
-      notice = if @message.sent?
-                 'Message already sent'
-               elsif @message.recipients?
+      notice = if !@message.sent? && @message.recipients?
                  send_recipients
                  'Message sent'
                else

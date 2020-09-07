@@ -18,6 +18,6 @@ class Message < ApplicationRecord
   end
 
   def recipients?
-    recipient_lists.find { |rl| break rl.recipients.count if rl.recipients.count > 0 }
+    recipient_lists.find { |rl| break rl.recipients.count if rl.recipients.count.positive? }
   end
 end
