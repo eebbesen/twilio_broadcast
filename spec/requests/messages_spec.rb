@@ -46,6 +46,8 @@ RSpec.describe '/messages', type: :request do
           m.reload
 
           expect(m.message_recipients.count).to eq(2)
+          expect(m.status).to eq('Sent')
+          expect(m.sent_at).not_to be_nil
         end.to change(MessageRecipient, :count).by(2)
       end
     end
