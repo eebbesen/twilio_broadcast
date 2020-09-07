@@ -94,7 +94,6 @@ class MessagesController < ApplicationController
   end
 
   def store_recipient_send(recipient, details = {})
-    byebug
     MessageRecipient.create(
       message: @message,
       recipient: recipient,

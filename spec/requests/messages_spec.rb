@@ -40,7 +40,7 @@ RSpec.describe '/messages', type: :request do
 
           VCR.use_cassette('twilio_post_message_spec') do
             post send_message_url(m)
-            expect(response).to be_successful
+            expect(response).to redirect_to(message_url(m))
           end
 
           m.reload
