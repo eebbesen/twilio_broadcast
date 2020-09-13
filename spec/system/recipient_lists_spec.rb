@@ -32,7 +32,7 @@ RSpec.describe 'RecipientLists', type: :system do
     it 'allows recipient list edit' do
       rl1 = create(:recipient_list_1, user: @user)
       rl2 = create(:recipient_list_2, user: @user)
-      rec = create(:recipient_1, recipient_lists: [rl1, rl2], user: @user)
+      create(:recipient_1, recipient_lists: [rl1, rl2], user: @user)
 
       visit "/recipient_lists/#{rl1.id}"
       click_on 'Edit'
