@@ -25,7 +25,7 @@ class RecipientListsController < ApplicationController
   # POST /recipient_lists
   # POST /recipient_lists.json
   def create
-    @recipient_list = RecipientList.new(recipient_list_params)
+    @recipient_list = RecipientList.new(recipient_list_params.merge(user_id: current_user.id))
 
     respond_to do |format|
       if @recipient_list.save

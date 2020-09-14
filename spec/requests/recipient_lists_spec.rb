@@ -99,6 +99,15 @@ RSpec.describe '/recipient_lists', type: :request do
           end.to change(RecipientList, :count).by(1)
         end
 
+        it 'uses current_user user_id and not user_id parameter passed in' do
+          user2 = create(:user_2)
+          expect do
+            post recipient_lists_url, params: { recipient_list: { name: 'Zoning Changes', user_id: user2.id } }
+          end.to change(RecipientList, :count).by(1)
+          expect(RecipientList.last.name).to eq('Zoning Changes')
+          expect(RecipientList.last.user_id).to eq(user.id)
+        end
+
         it 'redirects to the created recipient_list' do
           post recipient_lists_url, params: { recipient_list: valid_attributes }
           expect(response).to redirect_to(recipient_list_url(RecipientList.last))
