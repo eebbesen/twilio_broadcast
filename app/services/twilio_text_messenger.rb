@@ -12,7 +12,8 @@ class TwilioTextMessenger
     Twilio::REST::Client.new.messages.create(
       from: ENV['TWILIO_FROM_PHONE_NUMBER'],
       to: recipient,
-      body: content
+      body: content,
+      status_callback: "#{ENV['TWILIO_STATUS_CALLBACK']}/sms_status"
     )
   end
 end

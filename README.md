@@ -29,6 +29,13 @@ rubocop
 ```
 
 ## Deployment
+### Variables
+You'll need to set the following:
+* TWILIO_ACCOUNT_SID
+* TWILIO_AUTH_TOKEN
+* TWILIO_FROM_PHONE_NUMBER (can be a message service SID)
+* TWILIO_STATUS_CALLBACK (optional, but required for status updates)
+
 ### Heroku
 1. Push desired branch to Heroku
 * `git push heroku main:master`
