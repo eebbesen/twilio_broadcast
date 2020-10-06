@@ -3,6 +3,15 @@
 ##
 class MessagesController < ApplicationController
   before_action :set_message, only: %i[show edit update destroy send_message]
+  before_action :authenticate_user!, except: 'sms_status'
+
+  # POST /messages/sms_status
+  def sms_status
+    mr = MessageRecipient.where(sid: params['SmsSid'])
+    return unless status_update_valid? mr
+
+    mr.first.update(status: params['SmsStatus'])
+  end
 
   # GET /messages
   # GET /messages.json
@@ -77,6 +86,16 @@ class MessagesController < ApplicationController
 
   private
 
+  def status_update_valid?(recipient)
+    return false unless recipient.first
+
+    unless "+#{recipient.first.recipient.phone}" == params['To']
+      logger.warn("No match for sid #{params['SmsSid']} and phone #{params['To']}")
+      return false
+    end
+    true
+  end
+
   def send_recipients
     @message.recipient_lists.map(&:recipients).flatten.uniq.each do |r|
       send_recipient(r)
@@ -94,7 +113,8 @@ class MessagesController < ApplicationController
     end
     store_recipient_send(recipient, { status: result.status,
                                       error_code: result.error_code,
-                                      error_message: result.error_message })
+                                      error_message: result.error_message,
+                                      sid: result.sid })
   end
 
   def store_recipient_send(recipient, details = {})
@@ -103,7 +123,8 @@ class MessagesController < ApplicationController
       recipient: recipient,
       status: details[:status],
       error_code: details[:error_code],
-      error_message: details[:error_message]
+      error_message: details[:error_message],
+      sid: details[:sid]
     )
   end
 

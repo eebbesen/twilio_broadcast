@@ -25,6 +25,58 @@ RSpec.describe '/messages', type: :request do
     { content: '', user_id: user.id }
   end
 
+  context 'incoming' do
+    before do
+      r1 = create(:recipient_1, phone: '15005550006', user: user)
+      rl = create(:recipient_list_1, user: user, recipients: [r1])
+      m = create(:message_1, user: user, recipient_lists: [rl])
+      MessageRecipient.create(message: m, recipient: r1, sid: 'SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+
+      callback_string = <<-JSON
+      {
+        "SmsSid": "SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "SmsStatus": "delivered",
+        "MessageStatus": "delivered",
+        "To": "+15005550006",
+        "MessageSid": "SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "AccountSid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "From": "+16515551212",
+        "ApiVersion": "2010-04-01"
+      }
+      JSON
+      @cb = JSON.parse callback_string
+    end
+
+    it 'accepts status update' do
+      mr = MessageRecipient.last
+      expect(mr.status).not_to eq('delivered')
+
+      post sms_status_url(@cb)
+
+      mr.reload
+      expect(mr.status).to eq('delivered')
+    end
+
+    it "doesn't update when phone number doesn't match" do
+      @cb['To'] = 'slug'
+      mr = MessageRecipient.last
+      expect(mr.status).not_to eq('delivered')
+
+      post sms_status_url(@cb)
+
+      mr.reload
+      expect(mr.status).to be_nil
+    end
+
+    it "doesn't update when sid not found" do
+      @cb['SmsSid'] = 'SMX'
+
+      post sms_status_url(@cb)
+
+      expect(MessageRecipient).not_to receive(:update)
+    end
+  end
+
   context 'signed in user' do
     before(:each) do
       sign_in user
@@ -50,6 +102,7 @@ RSpec.describe '/messages', type: :request do
           expect(m.message_recipients.count).to eq(2)
           expect(m.status).to eq('Sent')
           expect(m.sent_at).not_to be_nil
+          expect(m.message_recipients.first.sid).not_to be_nil
         end.to change(MessageRecipient, :count).by(2)
       end
 
