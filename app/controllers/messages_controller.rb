@@ -94,7 +94,9 @@ class MessagesController < ApplicationController
     end
     store_recipient_send(recipient, { status: result.status,
                                       error_code: result.error_code,
-                                      error_message: result.error_message })
+                                      error_message: result.error_message,
+                                      sid: result.sid
+                                    })
   end
 
   def store_recipient_send(recipient, details = {})
@@ -103,7 +105,8 @@ class MessagesController < ApplicationController
       recipient: recipient,
       status: details[:status],
       error_code: details[:error_code],
-      error_message: details[:error_message]
+      error_message: details[:error_message],
+      sid: details[:sid]
     )
   end
 
