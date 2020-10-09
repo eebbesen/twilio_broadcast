@@ -7,10 +7,16 @@ class MessagesController < ApplicationController
 
   # POST /messages/sms_status
   def sms_status
-    mr = MessageRecipient.where(sid: params['SmsSid'])
+    mr = MessageRecipient.find_by(sid: params['SmsSid'])
     return unless status_update_valid? mr
 
-    mr.first.update(status: params['SmsStatus'])
+    error_code = if params['ErrorCode']
+      mr.error_code.blank? ? params['ErrorCode'] : "#{mr.error_code}; #{params['ErrorCode']}"
+    else
+      mr.error_code
+    end
+
+    mr.update(status: params['SmsStatus'], error_code: error_code)
   end
 
   # GET /messages
@@ -87,9 +93,9 @@ class MessagesController < ApplicationController
   private
 
   def status_update_valid?(recipient)
-    return false unless recipient.first
+    return false unless recipient
 
-    unless "+#{recipient.first.recipient.phone}" == params['To']
+    unless "+#{recipient.recipient.phone}" == params['To']
       logger.warn("No match for sid #{params['SmsSid']} and phone #{params['To']}")
       return false
     end
