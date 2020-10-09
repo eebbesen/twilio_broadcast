@@ -4,6 +4,7 @@
 class MessagesController < ApplicationController
   before_action :set_message, only: %i[show edit update destroy send_message]
   before_action :authenticate_user!, except: 'sms_status'
+  skip_before_action :verify_authenticity_token, only: 'sms_status'
 
   # POST /messages/sms_status
   def sms_status
