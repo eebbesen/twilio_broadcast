@@ -47,10 +47,22 @@ RSpec.describe '/messages', type: :request do
       @cb = JSON.parse callback_string
     end
 
-    it 'accepts status update' do
+    it 'accepts status update when destination starts with 1' do
       mr = MessageRecipient.last
       expect(mr.status).not_to eq('delivered')
 
+      post sms_status_url(@cb)
+
+      mr.reload
+      expect(mr.status).to eq('delivered')
+    end
+
+    it 'accepts status update when destination starts with area code' do
+      mr = MessageRecipient.last
+      expect(mr.status).not_to eq('delivered')
+
+      r = Recipient.find_by(phone: '15005550006')
+      r.update_attribute(:phone, '5005550006')
       post sms_status_url(@cb)
 
       mr.reload

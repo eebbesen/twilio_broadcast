@@ -97,7 +97,7 @@ class MessagesController < ApplicationController
   def status_update_valid?(recipient)
     return false unless recipient
 
-    unless "+#{recipient.recipient.phone}" == params['To']
+    unless params['To'].ends_with? recipient.recipient.phone
       logger.warn("No match for sid #{params['SmsSid']} and phone #{params['To']}")
       return false
     end
