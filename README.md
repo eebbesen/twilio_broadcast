@@ -1,3 +1,5 @@
+![Rails tests](https://github.com/eebbesen/twilio_broadcast/workflows/Rails%20tests/badge.svg)
+
 
 ## Development
 ### Local setup
