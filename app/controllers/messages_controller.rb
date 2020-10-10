@@ -13,10 +13,10 @@ class MessagesController < ApplicationController
     return unless status_update_valid? mr
 
     error_code = if params['ErrorCode']
-      mr.error_code.blank? ? params['ErrorCode'] : "#{mr.error_code}; #{params['ErrorCode']}"
-    else
-      mr.error_code
-    end
+                   mr.error_code.blank? ? params['ErrorCode'] : "#{mr.error_code}; #{params['ErrorCode']}"
+                 else
+                   mr.error_code
+                 end
 
     mr.update(status: params['SmsStatus'], error_code: error_code)
   end

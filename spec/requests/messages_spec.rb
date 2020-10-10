@@ -89,14 +89,14 @@ RSpec.describe '/messages', type: :request do
     end
 
     it 'records error code' do
-      @cb['ErrorCode'] = 30005
+      @cb['ErrorCode'] = 30_005
       @cb['SmsStatus'] = 'undelivered'
 
       post sms_status_url(@cb)
 
       mr = MessageRecipient.last.reload
       expect(mr.status).to eq('undelivered')
-      expect(mr.error_code).to eq(30005)
+      expect(mr.error_code).to eq(30_005)
     end
   end
 
