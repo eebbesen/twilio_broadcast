@@ -8,6 +8,7 @@ class MessagesController < ApplicationController
 
   # POST /messages/sms_status
   def sms_status
+    logger.debug(params)
     mr = MessageRecipient.find_by(sid: params['SmsSid'])
     return unless status_update_valid? mr
 
@@ -118,6 +119,7 @@ class MessagesController < ApplicationController
       puts "Error sending to #{recipient.phone} for #{@message.id}: #{e.message}"
       return
     end
+    logger.debug(result)
     store_recipient_send(recipient, { status: result.status,
                                       error_code: result.error_code,
                                       error_message: result.error_message,
