@@ -4,13 +4,21 @@
 class MessagesController < ApplicationController
   before_action :set_message, only: %i[show edit update destroy send_message]
   before_action :authenticate_user!, except: 'sms_status'
+  skip_before_action :verify_authenticity_token, only: 'sms_status'
 
   # POST /messages/sms_status
   def sms_status
-    mr = MessageRecipient.where(sid: params['SmsSid'])
+    logger.debug(params)
+    mr = MessageRecipient.find_by(sid: params['SmsSid'])
     return unless status_update_valid? mr
 
-    mr.first.update(status: params['SmsStatus'])
+    error_code = if params['ErrorCode']
+      mr.error_code.blank? ? params['ErrorCode'] : "#{mr.error_code}; #{params['ErrorCode']}"
+    else
+      mr.error_code
+    end
+
+    mr.update(status: params['SmsStatus'], error_code: error_code)
   end
 
   # GET /messages
@@ -87,9 +95,9 @@ class MessagesController < ApplicationController
   private
 
   def status_update_valid?(recipient)
-    return false unless recipient.first
+    return false unless recipient
 
-    unless "+#{recipient.first.recipient.phone}" == params['To']
+    unless params['To'].ends_with? recipient.recipient.phone
       logger.warn("No match for sid #{params['SmsSid']} and phone #{params['To']}")
       return false
     end
@@ -111,6 +119,7 @@ class MessagesController < ApplicationController
       puts "Error sending to #{recipient.phone} for #{@message.id}: #{e.message}"
       return
     end
+    logger.debug(result)
     store_recipient_send(recipient, { status: result.status,
                                       error_code: result.error_code,
                                       error_message: result.error_message,

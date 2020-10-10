@@ -29,8 +29,17 @@ rubocop
 ```
 
 ## Deployment
+### Variables
+* `TWILIO_ACCOUNT_SID`
+* `TWILIO_AUTH_TOKEN`
+* `TWILIO_FROM_PHONE_NUMBER`
+** can be a message service SID or a phone number
+* `TWILIO_STATUS_CALLBACK`
+** optional, but required for status updates
+** set to the base URL of your application (e.g., https://your-app.herokuapp.com)
+
 ### Heroku
 1. Push desired branch to Heroku
-* `git push heroku main:master`
+* `git push heroku main`
 1. Run migrations
 * `heroku run bin/rails db:migrate`
