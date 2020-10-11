@@ -45,3 +45,12 @@ rubocop
 * `git push heroku main`
 1. Run migrations
 * `heroku run bin/rails db:migrate`
+
+### Set up voice call forwarding
+1. Follow [instrctions](https://www.twilio.com/docs/studio/tutorials/how-to-forward-calls) to create a Twilio Studio Widget that will forward voice calls to your Twilio number on to another phone number.
+1. From the Twilio dashboard, click Phone Numbers
+1. Click the phone number you want to forward calls from
+1. Scroll down to Voice & Fax
+1. Select Studio Flow from A Call Comes In left dropdown
+1. Select your Twilio Studio Widget from A Call Comes In right dropdown
+1. Test by calling your Twilio number from a phone number that's _not_ the one your formward Twilio incoming calls to
