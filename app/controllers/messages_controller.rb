@@ -10,15 +10,48 @@ class MessagesController < ApplicationController
   def sms_status
     logger.debug(params)
     mr = MessageRecipient.find_by(sid: params['SmsSid'])
-    return unless status_update_valid? mr
+    if status_update_valid? mr
+      error_code = if params['ErrorCode']
+                     mr.error_code.blank? ? params['ErrorCode'] : "#{mr.error_code}; #{params['ErrorCode']}"
+                   else
+                     mr.error_code
+                   end
 
-    error_code = if params['ErrorCode']
-                   mr.error_code.blank? ? params['ErrorCode'] : "#{mr.error_code}; #{params['ErrorCode']}"
-                 else
-                   mr.error_code
-                 end
+      mr.update(status: params['SmsStatus'], error_code: error_code)
 
-    mr.update(status: params['SmsStatus'], error_code: error_code)
+      respond_to do |format|
+        format.json { render json: { 'message_sid' => params['SmsSid'] }.to_json, status: :ok }
+        format.html { render json: { 'message_sid' => params['SmsSid'] }.to_json, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.json do
+          render json: {
+            'error_message' => 'no recipient found',
+            'message_sid' => params['SmsSid']
+          }.to_json,
+                 status: :unprocessable_entity
+        end
+        format.html do
+          render json: { 'error_message' => 'no recipient found',
+                         'message_sid' => params['SmsSid'] }.to_json,
+                 status: :unprocessable_entity
+        end
+      end
+    end
+  rescue StandardError => e
+    respond_to do |format|
+      format.json do
+        render json: { 'message_sid' => params['SmsSid'],
+                       'error_message' => e.message }.to_json,
+               status: :unprocessable_entity
+      end
+      format.html do
+        render json: { 'message_sid' => params['SmsSid'],
+                       'error_message' => e.message }.to_json,
+               status: :unprocessable_entity
+      end
+    end
   end
 
   # GET /messages

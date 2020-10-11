@@ -55,6 +55,20 @@ RSpec.describe '/messages', type: :request do
 
       mr.reload
       expect(mr.status).to eq('delivered')
+      expect(response.body).to include(mr.sid)
+      expect(response.status).to eq(200)
+    end
+
+    it 'accepts status update when destination starts with 1 JSON' do
+      mr = MessageRecipient.last
+      expect(mr.status).not_to eq('delivered')
+
+      post sms_status_url, params: @cb.to_json, headers: { 'CONTENT_TYPE' => 'application/json' }
+
+      mr.reload
+      expect(mr.status).to eq('delivered')
+      expect(response.body).to include(mr.sid)
+      expect(response.status).to eq(200)
     end
 
     it 'accepts status update when destination starts with area code' do
@@ -67,6 +81,8 @@ RSpec.describe '/messages', type: :request do
 
       mr.reload
       expect(mr.status).to eq('delivered')
+      expect(response.body).to include(mr.sid)
+      expect(response.status).to eq(200)
     end
 
     it "doesn't update when phone number doesn't match" do
@@ -78,6 +94,9 @@ RSpec.describe '/messages', type: :request do
 
       mr.reload
       expect(mr.status).to be_nil
+      expect(response.body).to include(mr.sid)
+      expect(response.body).to include('no recipient found')
+      expect(response.status).to eq(422)
     end
 
     it "doesn't update when sid not found" do
@@ -86,6 +105,20 @@ RSpec.describe '/messages', type: :request do
       post sms_status_url(@cb)
 
       expect(MessageRecipient).not_to receive(:update)
+      expect(response.body).to include('SMX')
+      expect(response.body).to include('no recipient found')
+      expect(response.status).to eq(422)
+    end
+
+    it "doesn't update when sid not found JSON" do
+      @cb['SmsSid'] = 'SMX'
+
+      post sms_status_url, params: @cb.to_json, headers: { 'CONTENT_TYPE' => 'application/json' }
+
+      expect(MessageRecipient).not_to receive(:update)
+      expect(response.body).to include('SMX')
+      expect(response.body).to include('no recipient found')
+      expect(response.status).to eq(422)
     end
 
     it 'records error code' do
@@ -97,6 +130,8 @@ RSpec.describe '/messages', type: :request do
       mr = MessageRecipient.last.reload
       expect(mr.status).to eq('undelivered')
       expect(mr.error_code).to eq(30_005)
+      expect(response.body).to include(mr.sid)
+      expect(response.status).to eq(200)
     end
   end
 
