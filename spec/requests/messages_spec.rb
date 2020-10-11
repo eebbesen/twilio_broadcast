@@ -2,11 +2,12 @@
 
 require 'rails_helper'
 
-# for twilio incoming auth, always return true during tests
 module Twilio
   module Security
+    ##
+    # for twilio incoming auth, always return true during tests
     class RequestValidator
-      def validate(url, params, signature)
+      def validate(_url, _params, _signature)
         true
       end
     end
