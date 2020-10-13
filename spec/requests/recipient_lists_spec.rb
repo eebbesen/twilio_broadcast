@@ -18,7 +18,7 @@ RSpec.describe '/recipient_lists', type: :request do
   let(:user) { create(:user_1) }
 
   let(:valid_attributes) do
-    { name: 'Zoning Changes', user_id: user.id }
+    { name: 'Zoning Changes', user_id: user.id, keyword: 'kw', notes: 'description of list' }
   end
 
   let(:invalid_attributes) do
@@ -96,6 +96,11 @@ RSpec.describe '/recipient_lists', type: :request do
         it 'creates a new RecipientList' do
           expect do
             post recipient_lists_url, params: { recipient_list: valid_attributes }
+
+            rl = RecipientList.last
+            expect(rl.keyword).to eq('kw')
+            expect(rl.notes).to eq('description of list')
+            expect(rl.name).to eq('Zoning Changes')
           end.to change(RecipientList, :count).by(1)
         end
 
@@ -131,14 +136,15 @@ RSpec.describe '/recipient_lists', type: :request do
     describe 'PATCH /update' do
       context 'with valid parameters' do
         let(:new_attributes) do
-          { name: 'Assessments', user_id: user.id }
+          { name: 'Assessments', user_id: user.id, keyword: 'updated' }
         end
 
         it 'updates the requested recipient_list' do
           recipient_list = RecipientList.create! valid_attributes
           patch recipient_list_url(recipient_list), params: { recipient_list: new_attributes }
           recipient_list.reload
-          skip('Add assertions for updated state')
+          expect(recipient_list.name).to eq('Assessments')
+          expect(recipient_list.keyword).to eq('updated')
         end
 
         it 'redirects to the recipient_list' do
