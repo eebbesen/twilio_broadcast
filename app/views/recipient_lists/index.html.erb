@@ -8,6 +8,7 @@
       <th>Name</th>
       <th>Notes</th>
       <th>Recipients</th>
+      <th>Keyword</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -18,6 +19,7 @@
         <td><%= link_to recipient_list.name, recipient_list %></td>
         <td><%= recipient_list.notes %></td>
         <td><%= recipient_list.recipients.size %></td>
+        <td><%= recipient_list.keyword %></td>
       </tr>
     <% end %>
   </tbody>

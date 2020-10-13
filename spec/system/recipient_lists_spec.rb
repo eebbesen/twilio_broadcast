@@ -22,11 +22,13 @@ RSpec.describe 'RecipientLists', type: :system do
 
       fill_in 'Name', with: 'Zoning'
       fill_in 'Notes', with: 'Zoning issues'
+      fill_in 'Keyword', with: 'ZONING'
       click_on 'Create Recipient list'
 
       expect(page).to have_text 'Recipient list was successfully created.'
       expect(page).to have_text 'Name: Zoning'
       expect(page).to have_text 'Notes: Zoning issues'
+      expect(page).to have_text 'Keyword: ZONING'
     end
 
     it 'allows recipient list edit' do

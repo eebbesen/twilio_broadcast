@@ -71,6 +71,6 @@ class RecipientListsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def recipient_list_params
-    params.require(:recipient_list).permit(:name, :notes, :user_id)
+    params.require(:recipient_list).permit(:name, :notes, :user_id, :keyword)
   end
 end
