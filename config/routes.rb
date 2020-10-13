@@ -12,4 +12,5 @@ Rails.application.routes.draw do
 
   post 'messages/:id/send_message', to: 'messages#send_message', as: :send_message
   post 'sms_status', to: 'messages#sms_status', as: :sms_status
+  post 'subscribe', to: 'recipient_lists#subscribe', as: :subscribe
 end

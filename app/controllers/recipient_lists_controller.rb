@@ -3,6 +3,15 @@
 ##
 class RecipientListsController < ApplicationController
   before_action :set_recipient_list, only: %i[show edit update destroy]
+  before_action :authenticate_user!, except: 'subscribe'
+  skip_before_action :verify_authenticity_token, only: 'subscribe'
+
+  # POST /subscribe
+  def subscribe
+    list = RecipientList.find_by(keyword: params[:body].downcase)
+    recipient = Recipient.where(phone: params[:phone].gsub('+1', ''), user: list.user).first_or_create
+    sub = RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create
+  end
 
   # GET /recipient_lists
   # GET /recipient_lists.json

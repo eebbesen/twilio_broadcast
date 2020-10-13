@@ -35,6 +35,6 @@ module TwilioBroadcast
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    config.middleware.use Rack::TwilioWebhookAuthentication, ENV['TWILIO_AUTH_TOKEN'], '/sms_status'
+    config.middleware.use Rack::TwilioWebhookAuthentication, ENV['TWILIO_AUTH_TOKEN'], '/sms_status', '/subscribe'
   end
 end
