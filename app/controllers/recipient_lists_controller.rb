@@ -10,7 +10,7 @@ class RecipientListsController < ApplicationController
   def subscribe
     list = RecipientList.find_by(keyword: params[:body].downcase)
     recipient = Recipient.where(phone: params[:phone].gsub('+1', ''), user: list.user).first_or_create
-    sub = RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create
+    RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create
   end
 
   # GET /recipient_lists
