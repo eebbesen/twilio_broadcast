@@ -41,7 +41,7 @@ RSpec.describe '/recipient_lists', type: :request do
         Recipient.create!({ phone: '7635551212', user: user })
         expect do
           expect do
-            post subscribe_url({ body: 'KW', phone: '+17635551212' })
+            post subscribe_url({ body: 'kW', phone: '+17635551212' })
             expect(response).to be_successful
           end.to change(RecipientListMember, :count).by(1)
         end.to change(Recipient, :count).by(0)

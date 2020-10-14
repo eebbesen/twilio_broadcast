@@ -9,7 +9,7 @@ class Recipient < ApplicationRecord
   has_many :message_recipients
   has_many :messages, through: :message_recipients
 
-  before_save { self.phone = Recipient.normalize_phone(self.phone) }
+  before_save { self.phone = Recipient.normalize_phone(phone) }
 
   def on_recipient_list?(recipient_list_id)
     recipient_list_ids.include? recipient_list_id
