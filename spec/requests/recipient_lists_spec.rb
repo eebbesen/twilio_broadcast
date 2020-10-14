@@ -58,14 +58,15 @@ RSpec.describe '/recipient_lists', type: :request do
         end.to change(Recipient, :count).by(0)
       end
 
-      # it 'does ?? when keyword does not match' do
-      #   expect do
-      #     expect do
-      #       post subscribe_url({ body: 'KW', phone: '+17635551212' })
-      #       expect(response).to be_successful
-      #     end.to change(RecipientListMember, :count).by(1)
-      #   end.to change(Recipient, :count).by(0)
-      # end
+      it 'returns unsuccessful when keyword does not match' do
+        expect do
+          expect do
+            post subscribe_url({ body: 'BK', phone: '+17635551212' })
+            expect(response.status).to eq(422)
+            expect(response.body).to include('could not persist subscription for +17635551212 to list BK')
+          end.to change(RecipientListMember, :count).by(0)
+        end.to change(Recipient, :count).by(0)
+      end
     end
   end
 

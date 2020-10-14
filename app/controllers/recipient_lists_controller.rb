@@ -9,8 +9,24 @@ class RecipientListsController < ApplicationController
   # POST /subscribe
   def subscribe
     list = RecipientList.find_by(keyword: params[:body].downcase)
-    recipient = Recipient.where(phone: params[:phone].gsub('+1', ''), user: list.user).first_or_create
-    RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create
+    recipient = Recipient.where(phone: params[:phone].gsub('+1', ''), user: list.user).first_or_create!
+    RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create!
+  rescue StandardError => e
+    logger.error("error adding #{params[:phone]} to keyword #{params[:body]}\n#{e.message}")
+    respond_to do |format|
+      format.json do
+        render json: {
+          'error_message' => "could not persist subscription for #{params[:phone]} to list #{params[:body]}"
+        }.to_json,
+               status: :unprocessable_entity
+      end
+      format.html do
+        render json: {
+          'error_message' => "could not persist subscription for #{params[:phone]} to list #{params[:body]}"
+        },
+               status: :unprocessable_entity
+      end
+    end
   end
 
   # GET /recipient_lists
