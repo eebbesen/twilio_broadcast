@@ -47,7 +47,7 @@ RSpec.describe '/messages', type: :request do
       @cb = JSON.parse callback_string
     end
 
-    it 'accepts status update when destination starts with 1' do
+    it 'accepts status update' do
       mr = MessageRecipient.last
       expect(mr.status).not_to eq('delivered')
 
@@ -59,7 +59,7 @@ RSpec.describe '/messages', type: :request do
       expect(response.status).to eq(200)
     end
 
-    it 'accepts status update when destination starts with 1 JSON' do
+    it 'accepts status update JSON' do
       mr = MessageRecipient.last
       expect(mr.status).not_to eq('delivered')
 
@@ -69,34 +69,6 @@ RSpec.describe '/messages', type: :request do
       expect(mr.status).to eq('delivered')
       expect(response.body).to include(mr.sid)
       expect(response.status).to eq(200)
-    end
-
-    it 'accepts status update when destination starts with area code' do
-      mr = MessageRecipient.last
-      expect(mr.status).not_to eq('delivered')
-
-      r = Recipient.find_by(phone: '15005550006')
-      r.update_attribute(:phone, '5005550006')
-      post sms_status_url(@cb)
-
-      mr.reload
-      expect(mr.status).to eq('delivered')
-      expect(response.body).to include(mr.sid)
-      expect(response.status).to eq(200)
-    end
-
-    it "doesn't update when phone number doesn't match" do
-      @cb['To'] = 'slug'
-      mr = MessageRecipient.last
-      expect(mr.status).not_to eq('delivered')
-
-      post sms_status_url(@cb)
-
-      mr.reload
-      expect(mr.status).to be_nil
-      expect(response.body).to include(mr.sid)
-      expect(response.body).to include('no recipient found')
-      expect(response.status).to eq(422)
     end
 
     it "doesn't update when sid not found" do

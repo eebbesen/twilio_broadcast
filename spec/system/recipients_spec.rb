@@ -32,7 +32,7 @@ RSpec.describe 'Recipients', type: :system do
       click_on 'Create Recipient'
 
       expect(page).to have_text 'Recipient was successfully created.'
-      expect(page).to have_text 'Phone: 6515551212'
+      expect(page).to have_text 'Phone: +16515551212'
       expect(page).to have_text 'Email: recipient@td.td.com'
       expect(page).to have_text 'Name: Omar Recipient'
       expect(page).to have_text 'Notes: Registered at Mekong Night Market 2019'

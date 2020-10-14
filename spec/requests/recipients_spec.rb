@@ -121,7 +121,7 @@ RSpec.describe '/recipients', type: :request do
     describe 'PATCH /update' do
       context 'with valid parameters' do
         let(:new_attributes) do
-          { phone: '6125551212' }
+          { phone: '+16125551212' }
         end
 
         it 'updates the requested recipient' do

@@ -28,7 +28,7 @@ RSpec.describe 'RecipientLists', type: :system do
       expect(page).to have_text 'Recipient list was successfully created.'
       expect(page).to have_text 'Name: Zoning'
       expect(page).to have_text 'Notes: Zoning issues'
-      expect(page).to have_text 'Keyword: ZONING'
+      expect(page).to have_text 'Keyword: zoning'
     end
 
     it 'allows recipient list edit' do
