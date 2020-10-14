@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Recipient, type: :model do
-  context '#normalize_phone' do
+  context '.normalize_phone' do
     it "doesn't change E.164-formatted number" do
       expect(Recipient.normalize_phone('+16515551212')).to eq('+16515551212')
     end

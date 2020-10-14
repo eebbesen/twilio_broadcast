@@ -18,10 +18,9 @@ class Recipient < ApplicationRecord
   # Convert all phone numbers to E.164 formatting
   # https://support.twilio.com/hc/en-us/articles/223183008-Formatting-International-Phone-Numbers
   def self.normalize_phone(phone)
-    case
-    when phone.starts_with?('+1')
+    if phone.starts_with?('+1')
       phone
-    when phone.starts_with?('1')
+    elsif phone.starts_with?('1')
       "+#{phone}"
     else
       "+1#{phone}"

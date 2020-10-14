@@ -11,6 +11,7 @@ class RecipientList < ApplicationRecord
 
   def self.format_keyword(keyword)
     return unless keyword
+
     keyword.downcase
   end
 end
