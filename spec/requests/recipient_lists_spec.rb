@@ -33,6 +33,8 @@ RSpec.describe '/recipient_lists', type: :request do
           expect do
             post subscribe_url({ body: 'KW', phone: '7635551212' })
             expect(response).to be_successful
+            expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
+            expect(response.content_type).to include('application/xml')
           end.to change(RecipientListMember, :count).by(1)
         end.to change(Recipient, :count).by(1)
       end
@@ -43,6 +45,8 @@ RSpec.describe '/recipient_lists', type: :request do
           expect do
             post subscribe_url({ body: 'kW', phone: '+17635551212' })
             expect(response).to be_successful
+            expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
+            expect(response.content_type).to include('application/xml')
           end.to change(RecipientListMember, :count).by(1)
         end.to change(Recipient, :count).by(0)
       end
@@ -54,6 +58,8 @@ RSpec.describe '/recipient_lists', type: :request do
           expect do
             post subscribe_url({ body: 'KW', phone: '+17635551212' })
             expect(response).to be_successful
+            expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
+            expect(response.content_type).to include('application/xml')
           end.to change(RecipientListMember, :count).by(0)
         end.to change(Recipient, :count).by(0)
       end
@@ -62,8 +68,9 @@ RSpec.describe '/recipient_lists', type: :request do
         expect do
           expect do
             post subscribe_url({ body: 'BK', phone: '+17635551212' })
-            expect(response.status).to eq(422)
-            expect(response.body).to include('could not persist subscription for +17635551212 to list BK')
+            expect(response).to be_successful
+            expect(response.body).to include("There was an error processing your text to signup for BK. Please call")
+            expect(response.content_type).to include('application/xml')
           end.to change(RecipientListMember, :count).by(0)
         end.to change(Recipient, :count).by(0)
       end

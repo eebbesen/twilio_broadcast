@@ -11,22 +11,19 @@ class RecipientListsController < ApplicationController
     list = RecipientList.find_by(keyword: params[:body].downcase)
     recipient = Recipient.where(phone: params[:phone], user: list.user).first_or_create!
     RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create!
+
+    response = Twilio::TwiML::MessagingResponse.new
+    response.message do |message|
+      message.body "You are now subscribed to receive messages from #{list.name}. Respond with STOP #{list.keyword.upcase} to be removed from the list."
+    end
+    render xml: response.to_s
   rescue StandardError => e
     logger.error("error adding #{params[:phone]} to keyword #{params[:body]}\n#{e.message}")
-    respond_to do |format|
-      format.json do
-        render json: {
-          'error_message' => "could not persist subscription for #{params[:phone]} to list #{params[:body]}"
-        }.to_json,
-               status: :unprocessable_entity
-      end
-      format.html do
-        render json: {
-          'error_message' => "could not persist subscription for #{params[:phone]} to list #{params[:body]}"
-        },
-               status: :unprocessable_entity
-      end
+    response = Twilio::TwiML::MessagingResponse.new
+    response.message do |message|
+      message.body "There was an error processing your text to signup for #{params[:body]}. Please call #{ENV['TWILIO_FROM_PHONE_NUMBER']}"
     end
+    render xml: response.to_s
   end
 
   # GET /recipient_lists
