@@ -11,5 +11,4 @@ class IncomingSmsController < ApplicationController
   # GET /incoming_sms/1
   # GET /incoming_sms/1.json
   def show; end
-
 end
