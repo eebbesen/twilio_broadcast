@@ -69,7 +69,7 @@ RSpec.describe '/recipient_lists', type: :request do
           expect do
             post subscribe_url({ 'Body' => 'BK', 'From' => '+17635551212' })
             expect(response).to be_successful
-            expect(response.body).to include("There was an error processing your text to signup for BK. Please call")
+            expect(response.body).to include('There was an error processing your text to signup for BK. Please call')
             expect(response.content_type).to include('application/xml')
           end.to change(RecipientListMember, :count).by(0)
         end.to change(Recipient, :count).by(0)
