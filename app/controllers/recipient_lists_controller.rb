@@ -7,18 +7,17 @@ class RecipientListsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: 'subscribe'
 
   # POST /subscribe
+  # subscribe and unsubscribe
   def subscribe
     logger.info("params: #{params}")
+    body = params['Body'].downcase
 
-    list = RecipientList.find_by(keyword: params['Body'].downcase)
-    recipient = Recipient.where(phone: params['From'], user: list.user).first_or_create!
-    RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create!
-    logger.info("list: #{list}")
-    logger.info("recipient: #{recipient}")
-    response = Twilio::TwiML::MessagingResponse.new
-    response.message do |message|
-      message.body "You are now subscribed to receive messages from #{list.name}. Respond with STOP #{list.keyword.upcase} to be removed from the list."
+    response = if body.include?('stop')
+      stop(body, params['From'])
+    else
+      signup(body, params['From'])
     end
+
     render xml: response.to_s
   rescue StandardError => e
     logger.error("error adding #{params[:phone]} to keyword #{params['Body']}\n#{e.message}")
@@ -88,6 +87,49 @@ class RecipientListsController < ApplicationController
   end
 
   private
+
+  # handle unsubscribe/stop
+  # if keywords are found, just remove from lists
+  # otherwise inactivate recipient
+  def stop(body, from)
+    text = 'from this number'
+    r = Recipient.find_by(phone: from)
+
+    if r
+      words = body.downcase.split ' '
+      words.delete 'stop'
+      rls = r.recipient_lists.where(keyword: words.split(' '))
+      rlms = r.recipient_list_members.where(recipient_list_id: rls.map(&:id))
+
+      if rlms.size.positive?
+        removed = rls.map(&:keyword)
+        r.recipient_list_members.where(recipient_list_id: rls.map(&:id)).destroy_all
+        text = "about #{removed.join(', ')}"
+      else
+        r.active = false
+        r.save!
+      end
+    end
+
+    "We will no longer text you #{text}."
+  end
+
+  def keywords
+    @keywords ||= RecipientList.all.map(&:keyword)
+  end
+
+  # handle list subscription request
+  def signup(body, from)
+    list = RecipientList.find_by(keyword: body)
+    recipient = Recipient.where(phone: from, user: list.user).first_or_create!
+    RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create!
+    logger.info("list: #{list}")
+    logger.info("recipient: #{recipient}")
+    response = Twilio::TwiML::MessagingResponse.new
+    response.message do |message|
+      message.body "You are now subscribed to receive messages from #{list.name}. Respond with STOP #{list.keyword.upcase} to be removed from the list."
+    end
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_recipient_list

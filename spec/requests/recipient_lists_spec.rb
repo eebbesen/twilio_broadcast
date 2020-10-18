@@ -27,52 +27,93 @@ RSpec.describe '/recipient_lists', type: :request do
 
   context 'subscribe' do
     before(:each) { @rl = RecipientList.create! valid_attributes }
-    describe 'POST /subscribe' do
-      it 'creates new recipient and recipient_list_member' do
-        expect do
+    context 'signup' do
+      describe 'POST /subscribe' do
+        it 'creates new recipient and recipient_list_member' do
           expect do
-            post subscribe_url({ 'Body' => 'KW', 'From' => '7635551212' })
-            expect(response).to be_successful
-            expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
-            expect(response.content_type).to include('application/xml')
-          end.to change(RecipientListMember, :count).by(1)
-        end.to change(Recipient, :count).by(1)
-      end
+            expect do
+              post subscribe_url({ 'Body' => 'KW', 'From' => '7635551212' })
+              expect(response).to be_successful
+              expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
+              expect(response.content_type).to include('application/xml')
+            end.to change(RecipientListMember, :count).by(1)
+          end.to change(Recipient, :count).by(1)
+        end
 
-      it 'updates existing recipient and creates new recipient_list_member' do
-        Recipient.create!({ phone: '7635551212', user: user })
-        expect do
+        it 'updates existing recipient and creates new recipient_list_member' do
+          Recipient.create!({ phone: '7635551212', user: user })
           expect do
-            post subscribe_url({ 'Body' => 'kW', 'From' => '+17635551212' })
-            expect(response).to be_successful
-            expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
-            expect(response.content_type).to include('application/xml')
-          end.to change(RecipientListMember, :count).by(1)
-        end.to change(Recipient, :count).by(0)
-      end
+            expect do
+              post subscribe_url({ 'Body' => 'kW', 'From' => '+17635551212' })
+              expect(response).to be_successful
+              expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
+              expect(response.content_type).to include('application/xml')
+            end.to change(RecipientListMember, :count).by(1)
+          end.to change(Recipient, :count).by(0)
+        end
 
-      it 'does nothing when recipient already subscribed' do
-        r = Recipient.create!({ phone: '7635551212', user: user })
-        RecipientListMember.create!({ recipient: r, recipient_list: @rl })
-        expect do
+        it 'does nothing when recipient already subscribed' do
+          r = Recipient.create!({ phone: '7635551212', user: user })
+          RecipientListMember.create!({ recipient: r, recipient_list: @rl })
           expect do
-            post subscribe_url({ 'Body' => 'KW', 'From' => '+17635551212' })
-            expect(response).to be_successful
-            expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
-            expect(response.content_type).to include('application/xml')
-          end.to change(RecipientListMember, :count).by(0)
-        end.to change(Recipient, :count).by(0)
-      end
+            expect do
+              post subscribe_url({ 'Body' => 'KW', 'From' => '+17635551212' })
+              expect(response).to be_successful
+              expect(response.body).to include("You are now subscribed to receive messages from #{valid_attributes[:name]}. Respond with STOP #{valid_attributes[:keyword].upcase} to be removed from the list.")
+              expect(response.content_type).to include('application/xml')
+            end.to change(RecipientListMember, :count).by(0)
+          end.to change(Recipient, :count).by(0)
+        end
 
-      it 'returns unsuccessful when keyword does not match' do
-        expect do
+        it 'returns unsuccessful when keyword does not match' do
           expect do
-            post subscribe_url({ 'Body' => 'BK', 'From' => '+17635551212' })
-            expect(response).to be_successful
-            expect(response.body).to include('There was an error processing your text to signup for BK. Please call')
-            expect(response.content_type).to include('application/xml')
-          end.to change(RecipientListMember, :count).by(0)
-        end.to change(Recipient, :count).by(0)
+            expect do
+              post subscribe_url({ 'Body' => 'BK', 'From' => '+17635551212' })
+              expect(response).to be_successful
+              expect(response.body).to include('There was an error processing your text to signup for BK. Please call')
+              expect(response.content_type).to include('application/xml')
+            end.to change(RecipientListMember, :count).by(0)
+          end.to change(Recipient, :count).by(0)
+        end
+      end
+    end
+
+    context 'stop' do
+      describe 'POST /subscribe' do
+        it 'removes recipient from one list when keyword valid' do
+          r = Recipient.create(phone: '+17635551212', user: @rl.user)
+          RecipientListMember.create(recipient: r, recipient_list: @rl)
+          expect do
+            post subscribe_url({ 'Body' => 'stoP KW', 'From' => r.phone })
+            expect(response.body).to include('We will no longer text you about kw')
+          end.to change(RecipientListMember, :count).by(-1)
+        end
+
+        it 'inactivates recipient when keyword valid but user not subscribed' do
+          r = Recipient.create(phone: '+17635551212', user: @rl.user)
+          post subscribe_url({ 'Body' => 'stoP KW', 'From' => r.phone })
+          expect(response.body).to include('We will no longer text you from this number')
+          r.reload
+          expect(r.active).to be_falsey
+        end
+
+        it 'removes recipient from two lists when keywords valid' do
+          r = Recipient.create(phone: '+17635551212', user: @rl.user)
+          RecipientListMember.create(recipient: r, recipient_list: @rl)
+          rl2 = RecipientList.create!(name: 'permitting', user_id: user.id, keyword: 'permits')
+          RecipientListMember.create(recipient: r, recipient_list: rl2)
+          expect do
+            post subscribe_url({ 'Body' => 'permITs stoP KW', 'From' => r.phone })
+            expect(response.body).to include('We will no longer text you about kw, permits.')
+          end.to change(RecipientListMember, :count).by(-2)
+        end
+
+        it 'inactivates recipient when no keywords' do
+        end
+
+        it 'inactivates recipient when no valid keywords' do
+        end
+
       end
     end
   end
