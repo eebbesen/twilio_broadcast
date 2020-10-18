@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Incoming Sms</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Phone</th>
+      <th>Content</th>
+      <th>Request type</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @incoming_sms.each do |incoming_sm| %>
+      <tr>
+        <td><%= incoming_sm.phone %></td>
+        <td><%= incoming_sm.content %></td>
+        <td><%= incoming_sm.request_type %></td>
+        <td><%= link_to 'Show', incoming_sm %></td>
+        <td><%= link_to 'Edit', edit_incoming_sm_path(incoming_sm) %></td>
+        <td><%= link_to 'Destroy', incoming_sm, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Incoming Sm', new_incoming_sm_path %>

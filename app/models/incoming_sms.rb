@@ -1,0 +1,2 @@
+class IncomingSms < ApplicationRecord
+end
