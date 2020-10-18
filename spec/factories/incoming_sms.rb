@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :incoming_sm do
+  factory :incoming_sms do
     phone { "MyString" }
     content { "MyString" }
     request_type { "MyString" }
