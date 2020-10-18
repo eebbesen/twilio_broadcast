@@ -24,7 +24,7 @@ class RecipientListsController < ApplicationController
     logger.error("error adding #{params[:phone]} to keyword #{params['Body']}\n#{e.message}")
     response = Twilio::TwiML::MessagingResponse.new
     response.message do |message|
-      message.body "There was an error processing your text to signup for #{params['Body']}. Please call #{ENV['TWILIO_FROM_PHONE_NUMBER']}"
+      message.body "There was an error processing your text to signup for #{params['Body']}. Please call #{ENV['TWILIO_FROM_PHONE_NUMBER']} for help."
     end
     render xml: response.to_s
   end
