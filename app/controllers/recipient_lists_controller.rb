@@ -8,9 +8,9 @@ class RecipientListsController < ApplicationController
 
   # POST /subscribe
   def subscribe
-    logger.error("params: #{params}")
-    list = RecipientList.find_by(keyword: params[:body].downcase)
-    recipient = Recipient.where(phone: params[:phone], user: list.user).first_or_create!
+    logger.debug("params: #{params}")
+    list = RecipientList.find_by(keyword: params['Body'].downcase)
+    recipient = Recipient.where(phone: params['From'], user: list.user).first_or_create!
     RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create!
 
     response = Twilio::TwiML::MessagingResponse.new
@@ -19,10 +19,10 @@ class RecipientListsController < ApplicationController
     end
     render xml: response.to_s
   rescue StandardError => e
-    logger.error("error adding #{params[:phone]} to keyword #{params[:body]}\n#{e.message}")
+    logger.error("error adding #{params[:phone]} to keyword #{params['Body']}\n#{e.message}")
     response = Twilio::TwiML::MessagingResponse.new
     response.message do |message|
-      message.body "There was an error processing your text to signup for #{params[:body]}. Please call #{ENV['TWILIO_FROM_PHONE_NUMBER']}"
+      message.body "There was an error processing your text to signup for #{params['Body']}. Please call #{ENV['TWILIO_FROM_PHONE_NUMBER']}"
     end
     render xml: response.to_s
   end
