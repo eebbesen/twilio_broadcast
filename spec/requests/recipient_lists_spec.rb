@@ -113,7 +113,6 @@ RSpec.describe '/recipient_lists', type: :request do
 
         it 'inactivates recipient when no valid keywords' do
         end
-
       end
     end
   end

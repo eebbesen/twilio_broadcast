@@ -13,10 +13,10 @@ class RecipientListsController < ApplicationController
     body = params['Body'].downcase
 
     response = if body.include?('stop')
-      stop(body, params['From'])
-    else
-      signup(body, params['From'])
-    end
+                 stop(body, params['From'])
+               else
+                 signup(body, params['From'])
+               end
 
     render xml: response.to_s
   rescue StandardError => e
