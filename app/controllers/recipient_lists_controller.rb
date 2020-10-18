@@ -8,13 +8,13 @@ class RecipientListsController < ApplicationController
 
   # POST /subscribe
   def subscribe
-    logger.error("params: #{params}")
+    logger.info("params: #{params}")
 
     list = RecipientList.find_by(keyword: params['Body'].downcase)
     recipient = Recipient.where(phone: params['From'], user: list.user).first_or_create!
     RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create!
-    logger.error("list: #{list}")
-    logger.error("recipient: #{recipient}")
+    logger.info("list: #{list}")
+    logger.info("recipient: #{recipient}")
     response = Twilio::TwiML::MessagingResponse.new
     response.message do |message|
       message.body "You are now subscribed to receive messages from #{list.name}. Respond with STOP #{list.keyword.upcase} to be removed from the list."
