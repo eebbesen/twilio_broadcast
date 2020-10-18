@@ -8,7 +8,7 @@ class RecipientListsController < ApplicationController
 
   # POST /subscribe
   def subscribe
-    logger.debug("params: #{params}")
+    logger.error("params: #{params}")
     list = RecipientList.find_by(keyword: params[:body].downcase)
     recipient = Recipient.where(phone: params[:phone], user: list.user).first_or_create!
     RecipientListMember.where(recipient_list: list, recipient: recipient).first_or_create!
