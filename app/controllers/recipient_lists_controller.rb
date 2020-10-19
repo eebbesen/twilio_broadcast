@@ -10,14 +10,17 @@ class RecipientListsController < ApplicationController
   # subscribe and unsubscribe
   def subscribe
     logger.info("params: #{params}")
+    ism = persist_incoming(params['Body'], params['From'])
     body = params['Body'].downcase
 
     response = if body.include?('stop')
+                 ism.request_type = 'stop'
                  stop(body, params['From'])
                else
+                 ism.request_type = 'signup'
                  signup(body, params['From'])
                end
-
+    ism.save
     render xml: response.to_s
   rescue StandardError => e
     logger.error("error adding #{params[:phone]} to keyword #{params['Body']}\n#{e.message}")
@@ -87,6 +90,10 @@ class RecipientListsController < ApplicationController
   end
 
   private
+
+  def persist_incoming(body, from)
+    IncomingSms.create!(phone: from, content: body)
+  end
 
   # handle unsubscribe/stop
   # if keywords are found, just remove from lists
