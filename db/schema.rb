@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 2020_11_19_091905) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id"
+    t.datetime "send_time"
   end
 
   create_table "recipient_list_members", force: :cascade do |t|
