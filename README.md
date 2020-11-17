@@ -50,7 +50,7 @@ rubocop
 #### Set up voice call forwarding
 These instructions show you how to forward calls to your Twilio number to another phone (landline or mobile). Call forwarding does not involve twilio_broadcast in any way and is entirely handled by Twilio.
 
-1. Follow [instrctions](https://www.twilio.com/docs/studio/tutorials/how-to-forward-calls) to create a Twilio Studio Widget that will forward voice calls to your Twilio number on to another phone number.
+1. Follow [instructions](https://www.twilio.com/docs/studio/tutorials/how-to-forward-calls) to create a Twilio Studio Widget that will forward voice calls to your Twilio number on to another phone number.
 1. From the Twilio dashboard, click Phone Numbers
 1. Click the phone number you want to forward calls from
 1. Scroll down to Voice & Fax
