@@ -21,6 +21,7 @@
 
   <%= link_to 'Edit', edit_recipient_path(@recipient), class: 'btn btn-primary' %>
   <%= link_to 'Cancel', recipients_path, class: 'btn btn-secondary' %>
+  <%= link_to 'Delete', @recipient, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %></td>
 
   <h3>Recipent Lists</h3>
   <% RecipientList.where(user: @recipient.user).each do |rl| %>

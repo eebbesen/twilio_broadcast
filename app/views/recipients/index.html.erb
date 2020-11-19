@@ -10,6 +10,7 @@
       <th>Name</th>
       <th>Notes</th>
       <th>Active</th>
+      <th/>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -22,6 +23,7 @@
         <td><%= recipient.name %></td>
         <td><%= recipient.notes %></td>
         <td><%= recipient.active ? 'Yes' : 'No' %></td>
+        <td><%= link_to 'Delete', recipient, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %></td>
       </tr>
     <% end %>
   </tbody>

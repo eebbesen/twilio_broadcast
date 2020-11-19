@@ -84,7 +84,7 @@ class RecipientListsController < ApplicationController
   def destroy
     @recipient_list.destroy
     respond_to do |format|
-      format.html { redirect_to recipient_lists_url, notice: 'Recipient list was successfully destroyed.' }
+      format.html { redirect_to recipient_lists_url, notice: 'Recipient list was successfully deleted.' }
       format.json { head :no_content }
     end
   end

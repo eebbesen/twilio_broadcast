@@ -55,9 +55,9 @@ class RecipientsController < ApplicationController
   # DELETE /recipients/1
   # DELETE /recipients/1.json
   def destroy
-    @recipient.destroy
+    @recipient.remove
     respond_to do |format|
-      format.html { redirect_to recipients_url, notice: 'Recipient was successfully destroyed.' }
+      format.html { redirect_to recipients_url, notice: 'Recipient was successfully deleted.' }
       format.json { head :no_content }
     end
   end

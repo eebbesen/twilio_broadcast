@@ -35,22 +35,35 @@ RSpec.describe Recipient, type: :model do
     expect(r.errors[:phone]).to include("can't be blank")
   end
 
-  context '#on_recipient_list?' do
+  context 'recipient lists' do
     before(:each) do
       @u = create(:user_1)
       @r = create(:recipient_1, user: @u)
       @rl = create(:recipient_list_1, user: @u, recipients: [@r], id: 100)
     end
 
-    it 'is true when associated with list' do
-      @r = create(:recipient_1, user: @u, recipient_lists: [@rl])
-      expect(@r.on_recipient_list?(@rl.id)).to be_truthy
+    context '#on_recipient_list?' do
+      it 'is true when associated with list' do
+        @r = create(:recipient_1, user: @u, recipient_lists: [@rl])
+        expect(@r.on_recipient_list?(@rl.id)).to be_truthy
+      end
+
+      it 'is false when not associated with list' do
+        rl_two = create(:recipient_list_2, user: @u, recipients: [@r], id: 1001)
+        @r = create(:recipient_1, user: @u, recipient_lists: [@rl])
+        expect(@r.on_recipient_list?(rl_two.id)).to be_falsey
+      end
     end
 
-    it 'is false when not associated with list' do
-      rl_two = create(:recipient_list_2, user: @u, recipients: [@r], id: 1001)
-      @r = create(:recipient_1, user: @u, recipient_lists: [@rl])
-      expect(@r.on_recipient_list?(rl_two.id)).to be_falsey
+    it 'deletes associated recipient_list_members' do
+      @rlc = @r.recipient_list_members.count
+      expect(@rlc).to be > 0
+
+      expect do
+        expect do
+          @r.remove
+        end.to change(Recipient, :count).by(-1)
+      end.to change(RecipientListMember, :count).by(@rlc * -1)
     end
   end
 end

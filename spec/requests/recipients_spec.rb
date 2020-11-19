@@ -171,6 +171,17 @@ RSpec.describe '/recipients', type: :request do
         end.to change(Recipient, :count).by(-1)
       end
 
+      it 'removes the requested recipient who has been sent messages' do
+        recipient = Recipient.create! valid_attributes
+        message = create(:message, content: 'hello there', user: recipient.user)
+        create(:message_recipient, message: message, recipient: recipient)
+
+        delete recipient_url(recipient)
+
+        recipient.reload
+        expect(recipient.removed).to be_truthy
+      end
+
       it 'redirects to the recipients list' do
         recipient = Recipient.create! valid_attributes
         delete recipient_url(recipient)
@@ -185,7 +196,7 @@ RSpec.describe '/recipients', type: :request do
         rescue StandardError => e
           exception = e
         end
-        expect(exception.message).to include("undefined method `destroy' for nil:NilClass")
+        expect(exception.message).to include("undefined method `remove' for nil:NilClass")
       end
     end
   end

@@ -26,4 +26,16 @@ class Recipient < ApplicationRecord
       "+1#{phone}"
     end
   end
+
+  # since we don't want to destroy records for sent messages
+  # we don't just destroy if there have been sends
+  def remove
+    recipient_list_members.destroy_all
+    if self.message_recipients.count.zero?
+      self.destroy
+    else
+      self.removed = true
+      self.save!
+    end
+  end
 end
