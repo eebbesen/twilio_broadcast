@@ -59,6 +59,10 @@ jobs:
           path: coverage
 
       - name: rubocop
-        run: |
-          gem install rubocop
-          bundle exec rubocop
+        run: bundle exec rubocop
+
+      - name: bundle audit
+        run: bundle exec bundler-audit
+
+      - name: brakeman
+        run: bundle exec brakeman

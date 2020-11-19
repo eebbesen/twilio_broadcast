@@ -57,6 +57,7 @@ group :development do
 end
 
 group :test do
+  gem 'brakeman'
   gem 'vcr'
   gem 'webmock'
 end
