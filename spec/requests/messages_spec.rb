@@ -179,7 +179,7 @@ RSpec.describe '/messages', type: :request do
         expect(response.body).to include(valid_attributes[:content])
       end
 
-      it 'only gets message for current user' do
+      it 'only gets messages for current user' do
         message_1 = create(:message_1, user: user)
         message_2 = create(:message_2, user: create(:user_2))
 
@@ -188,6 +188,15 @@ RSpec.describe '/messages', type: :request do
         expect(response).to be_successful
         expect(response.body).to include(message_1.content)
         expect(response.body).not_to include(message_2.content)
+      end
+
+      it 'only shows delete for unsent messages' do
+        create(:message_1, user: user)
+        create(:message_2, user: user, status: 'Sent')
+
+        get messages_url
+
+        expect(response.body).to include('Delete').at_most(1).times
       end
     end
 
