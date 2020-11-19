@@ -11,6 +11,8 @@ class Recipient < ApplicationRecord
 
   before_save { self.phone = Recipient.normalize_phone(phone) }
 
+  scope :available, -> { where(removed: false) }
+
   def on_recipient_list?(recipient_list_id)
     recipient_list_ids.include? recipient_list_id
   end

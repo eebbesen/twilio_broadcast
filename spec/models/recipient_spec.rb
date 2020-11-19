@@ -3,6 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe Recipient, type: :model do
+  context 'scopes' do
+    it "doesn't returned removed recipients" do
+      user = create(:user_1)
+      create(:recipient, phone: '+1001112222', user: user)
+      create(:recipient, phone: '+1001113333', removed: true, user: user)
+
+      expect(Recipient.available.count).to eq(1)
+    end
+  end
+
   context '.normalize_phone' do
     it "doesn't change E.164-formatted number" do
       expect(Recipient.normalize_phone('+16515551212')).to eq('+16515551212')

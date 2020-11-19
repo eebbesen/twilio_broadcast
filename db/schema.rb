@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 2020_11_19_031435) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "active", default: true
     t.integer "user_id"
-    t.boolean "removed"
+    t.boolean "removed", default: false
   end
 
   create_table "users", force: :cascade do |t|

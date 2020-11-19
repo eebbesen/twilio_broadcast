@@ -18,7 +18,7 @@ RSpec.describe '/recipients', type: :request do
   let(:user) { create(:user_1) }
 
   let(:valid_attributes) do
-    { phone: '651551212', user_id: user.id }
+    { phone: '6515551212', user_id: user.id }
   end
 
   let(:invalid_attributes) do
@@ -35,6 +35,15 @@ RSpec.describe '/recipients', type: :request do
         Recipient.create! valid_attributes
         get recipients_url
         expect(response).to be_successful
+      end
+
+      it "doesn't render removed recipients" do
+        Recipient.create! valid_attributes
+        r = Recipient.create!({ phone: '6515550000', user: user, removed: true })
+        get recipients_url
+        expect(response).to be_successful
+        expect(response.body).to include('6515551212')
+        expect(response.body).not_to include('6515550000')
       end
 
       it 'only gets recipient for current user' do
