@@ -3,24 +3,22 @@
 require 'rails_helper'
 
 RSpec.describe 'Recipients', type: :system do
-  before do
-    driven_by(:rack_test)
-  end
+  before { driven_by(:rack_test) }
+  let(:user) { create(:user_1) }
 
   context 'signed in user' do
     before do
-      @user = create(:user_1)
-      pword = 'Passw0rd!'
       visit 'users/sign_in'
-      fill_in 'Email', with: @user.email
-      fill_in 'Password', with: pword
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
       click_on 'Log in'
     end
 
-    it 'allows recipient creation' do
-      rl1 = create(:recipient_list_1, user: @user)
-      rl2 = create(:recipient_list_2, user: @user)
+    let!(:rl1) { create(:recipient_list_1, user: user) }
+    let!(:rl2) { create(:recipient_list_2, user: user) }
+    let!(:rec) { create(:recipient_1, recipient_lists: [rl1, rl2], user: user) }
 
+    it 'allows recipient creation' do
       visit '/recipients'
       click_on 'New Recipient'
 
@@ -42,10 +40,24 @@ RSpec.describe 'Recipients', type: :system do
       expect(page.find("#check_#{rl2.id}").checked?).to be_falsey
     end
 
+    it 'allows recipient deletion from index' do
+      visit '/recipients'
+
+      expect do
+        click_on 'Delete'
+      end.to change(Recipient, :count).by(-1)
+    end
+
+    it 'allows recipient deletion from show' do
+      visit "/recipients/#{rec.id}"
+
+      expect do
+        click_on 'Delete'
+      end.to change(Recipient, :count).by(-1)
+    end
+
     it 'allows recipient edit' do
-      rl1 = create(:recipient_list_1, user: @user)
-      rl2 = create(:recipient_list_2, user: @user)
-      rec = create(:recipient_1, recipient_lists: [rl1, rl2], user: @user)
+      rec = create(:recipient_1, recipient_lists: [rl1, rl2], user: user)
 
       visit "/recipients/#{rec.id}"
       click_on 'Edit'

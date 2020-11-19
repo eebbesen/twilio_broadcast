@@ -3,16 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe 'RecipientLists', type: :system do
-  before do
-    driven_by(:rack_test)
-  end
+  before { driven_by(:rack_test) }
+  let(:user) { create(:user_1) }
 
   context 'signed in user' do
     before do
-      @user = create(:user_1)
       visit 'users/sign_in'
-      fill_in 'Email', with: @user.email
-      fill_in 'Password', with: @user.password
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
       click_on 'Log in'
     end
 
@@ -31,20 +29,42 @@ RSpec.describe 'RecipientLists', type: :system do
       expect(page).to have_text 'Keyword: zoning'
     end
 
-    it 'allows recipient list edit' do
-      rl1 = create(:recipient_list_1, user: @user)
-      rl2 = create(:recipient_list_2, user: @user)
-      create(:recipient_1, recipient_lists: [rl1, rl2], user: @user)
+    context 'existing recipient list' do
+      let(:rl1) { create(:recipient_list_1, user: user) }
+      before do
+        rl2 = create(:recipient_list_2, user: user)
+        create(:recipient_1, recipient_lists: [rl1, rl2], user: user)
+      end
 
-      visit "/recipient_lists/#{rl1.id}"
-      click_on 'Edit'
+      it 'allows recipient list deletion from show' do
+        visit "/recipient_lists/#{rl1.id}"
 
-      fill_in 'Name', with: 'updated list name'
-      click_on 'Update Recipient list'
+        expect do
+          find('.btn-danger', match: :first).click
+          expect(page).to have_text 'Recipient list was successfully deleted.'
+        end.to change(RecipientList, :count).by(-1)
+      end
 
-      expect(page).to have_text 'Recipient list was successfully updated.'
-      expect(page).to have_text 'Name: updated list name'
-      expect(page).to have_text "Notes: #{rl1.notes}"
+      it 'allows recipient list deletion from index' do
+        visit '/recipient_lists'
+
+        expect do
+          find('.btn-danger', match: :first).click
+          expect(page).to have_text 'Recipient list was successfully deleted.'
+        end.to change(RecipientList, :count).by(-1)
+      end
+
+      it 'allows recipient list edit' do
+        visit "/recipient_lists/#{rl1.id}"
+        click_on 'Edit'
+
+        fill_in 'Name', with: 'updated list name'
+        click_on 'Update Recipient list'
+
+        expect(page).to have_text 'Recipient list was successfully updated.'
+        expect(page).to have_text 'Name: updated list name'
+        expect(page).to have_text "Notes: #{rl1.notes}"
+      end
     end
 
     it "doesn't allow recipient creation with blank name" do
