@@ -21,6 +21,7 @@
       </div>
     <% end %>
     <%= link_to 'Edit', edit_message_path(@message), class: 'btn btn-primary' %>
+    <%= link_to 'Delete', @message, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
   <% end %>
 
   <%= link_to @message.sent? ? 'Back' : 'Cancel', messages_path, class: 'btn btn-secondary' %>

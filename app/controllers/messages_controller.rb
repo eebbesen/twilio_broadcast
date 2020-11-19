@@ -105,10 +105,17 @@ class MessagesController < ApplicationController
   # DELETE /messages/1
   # DELETE /messages/1.json
   def destroy
-    @message.destroy
-    respond_to do |format|
-      format.html { redirect_to messages_url, notice: 'Message was successfully destroyed.' }
-      format.json { head :no_content }
+    begin
+      @message.remove
+      respond_to do |format|
+        format.html { redirect_to messages_url, notice: 'Message was successfully destroyed.' }
+        format.json { head :no_content }
+      end
+    rescue SentMessageError => sme
+      respond_to do |format|
+        format.html { redirect_to messages_url, alert: sme.message }
+        format.json { render json: { 'error' => sme.message }.to_json, status: :unprocessable_entity  }
+      end
     end
   end
 
