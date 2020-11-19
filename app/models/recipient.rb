@@ -11,6 +11,8 @@ class Recipient < ApplicationRecord
 
   before_save { self.phone = Recipient.normalize_phone(phone) }
 
+  scope :available, -> { where(removed: false) }
+
   def on_recipient_list?(recipient_list_id)
     recipient_list_ids.include? recipient_list_id
   end
@@ -24,6 +26,18 @@ class Recipient < ApplicationRecord
       "+#{phone}"
     else
       "+1#{phone}"
+    end
+  end
+
+  # since we don't want to destroy records for sent messages
+  # we don't just destroy if there have been sends
+  def remove
+    recipient_list_members.destroy_all
+    if message_recipients.count.zero?
+      destroy
+    else
+      self.removed = true
+      save!
     end
   end
 end

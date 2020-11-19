@@ -6,7 +6,7 @@ class Message < ApplicationRecord
   belongs_to :user
   has_many :message_recipients
   has_many :recipients, through: :message_recipients
-  has_many :message_recipient_lists
+  has_many :message_recipient_lists, dependent: :delete_all
   has_many :recipient_lists, through: :message_recipient_lists
 
   def recipient_list_active?(recipient_list_id)
@@ -20,4 +20,13 @@ class Message < ApplicationRecord
   def recipients?
     recipient_lists.find { |rl| break rl.recipients.count if rl.recipients.count.positive? }
   end
+
+  def remove
+    raise SentMessageError, 'You cannot delete a message that has been sent' if sent?
+
+    destroy
+  end
+end
+
+class SentMessageError < StandardError
 end

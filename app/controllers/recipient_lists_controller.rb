@@ -34,7 +34,7 @@ class RecipientListsController < ApplicationController
   # GET /recipient_lists
   # GET /recipient_lists.json
   def index
-    @recipient_lists = RecipientList.where(user: current_user)
+    @recipient_lists = RecipientList.where(user: current_user).available
   end
 
   # GET /recipient_lists/1
@@ -82,9 +82,9 @@ class RecipientListsController < ApplicationController
   # DELETE /recipient_lists/1
   # DELETE /recipient_lists/1.json
   def destroy
-    @recipient_list.destroy
+    @recipient_list.remove
     respond_to do |format|
-      format.html { redirect_to recipient_lists_url, notice: 'Recipient list was successfully destroyed.' }
+      format.html { redirect_to recipient_lists_url, notice: 'Recipient list was successfully deleted.' }
       format.json { head :no_content }
     end
   end

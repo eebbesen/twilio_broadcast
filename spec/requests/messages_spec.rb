@@ -317,6 +317,28 @@ RSpec.describe '/messages', type: :request do
         end.to change(Message, :count).by(-1)
       end
 
+      it 'removes message recipient lists' do
+        message = Message.create! valid_attributes
+        rl = RecipientList.create! name: 'My List', user: message.user
+        MessageRecipientList.create! message: message, recipient_list: rl
+        expect do
+          expect do
+            delete message_url(message)
+          end.to change(MessageRecipientList, :count).by(-1)
+        end.to change(Message, :count).by(-1)
+      end
+
+      it 'raises SentMessageError when attempt to destroy a sent message' do
+        message = Message.create! valid_attributes
+        message.update_attribute(:status, 'Sent')
+        expect do
+          expect do
+            delete message_url(message)
+            expect(response).to redirect_to(messages_url)
+          end.not_to change(MessageRecipientList, :count)
+        end.not_to change(Message, :count)
+      end
+
       it 'redirects to the messages list' do
         message = Message.create! valid_attributes
         delete message_url(message)
@@ -331,7 +353,7 @@ RSpec.describe '/messages', type: :request do
         rescue StandardError => e
           exception = e
         end
-        expect(exception.message).to include("undefined method `destroy' for nil:NilClass")
+        expect(exception.message).to include("undefined method `remove' for nil:NilClass")
       end
     end
   end

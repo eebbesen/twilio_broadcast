@@ -2,6 +2,12 @@
 
 
 ## Development
+### PostgreSQL Docker
+```bash
+docker-compose up
+```
+will create and run a PostgreSQL instance.
+
 ### Local setup
 ```bash
 bin/rake db:setup
@@ -73,3 +79,12 @@ https://www.twilio.com/docs/sms/tutorials/how-to-receive-and-reply-ruby
 1. Select Webhook from the A Message Comes In dropdown
 1. Enter your twilio_broadcast application URL followed by `/subscribe` in the text box to the right of the dropdown (e.g., `https://supc-broadcast-test.herokuapp.com/subscribe`)
 1. Click Save
+
+
+### Troubleshooting
+#### ExecJS issues
+If you see errors at runtime or test time related to ExecJS run
+
+    bin/rake assets:precompile RAILS_ENV=[test|development]
+
+(specify only one or the other of `test` or `development`)

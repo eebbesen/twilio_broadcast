@@ -39,6 +39,7 @@
 
   <%= link_to 'Edit', edit_recipient_list_path(@recipient_list), class: 'btn btn-primary'  %>
   <%= link_to 'Back', recipient_lists_path, class: 'btn btn-secondary' %>
+  <%= link_to 'Delete', @recipient_list, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
 <% else %>
   <strong>Recipient list not found</strong>
 <% end %>
