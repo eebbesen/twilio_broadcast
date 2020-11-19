@@ -136,6 +136,15 @@ RSpec.describe '/recipient_lists', type: :request do
         expect(response).to be_successful
       end
 
+      it 'hids removed RecipientLists' do
+        RecipientList.create! valid_attributes
+        RecipientList.create! name: 'Construction', user_id: user.id, removed: true
+        get recipient_lists_url
+        expect(response).to be_successful
+        expect(response.body).to include('Zoning')
+        expect(response.body).not_to include('Construction')
+      end
+
       it 'only gets recipient list for current user' do
         recipient_list_1 = create(:recipient_list_1, user: user)
         recipient_list_2 = create(:recipient_list_2, user: create(:user_2))
@@ -278,11 +287,43 @@ RSpec.describe '/recipient_lists', type: :request do
     end
 
     describe 'DELETE /destroy' do
+      let!(:recipient_list) { RecipientList.create! valid_attributes }
+
       it 'destroys the requested recipient_list' do
-        recipient_list = RecipientList.create! valid_attributes
         expect do
           delete recipient_list_url(recipient_list)
         end.to change(RecipientList, :count).by(-1)
+      end
+
+      context 'on a message' do
+        before(:each) do
+          r = create(:recipient, phone: '+16515551212', user: recipient_list.user)
+          RecipientListMember.create!(recipient: r, recipient_list: recipient_list)
+          @message = create(:message, user: recipient_list.user, content: 'hello there')
+          MessageRecipientList.create(message: @message, recipient_list: recipient_list)
+        end
+
+        it 'destroys a recipient_list that has not been sent to' do
+          expect do
+            expect do
+              expect do
+                delete recipient_list_url(recipient_list)
+              end.to change(RecipientListMember, :count).by(-1)
+            end.to change(RecipientList, :count).by(-1)
+          end.to change(MessageRecipientList, :count).by(-1)
+        end
+
+        it 'destroys a recipient_list that has been sent to' do
+          @message.update_attribute(:status, 'Sent')
+          MessageRecipient.create(message: @message, recipient: recipient_list.recipients.first)
+          expect do
+            expect do
+              delete recipient_list_url(recipient_list)
+              recipient_list.reload
+              recipient_list.removed = true
+            end.to change(RecipientListMember, :count).by(0)
+          end.not_to change(MessageRecipientList, :count)
+        end
       end
 
       it 'redirects to the recipient_lists list' do
@@ -299,7 +340,7 @@ RSpec.describe '/recipient_lists', type: :request do
         rescue StandardError => e
           exception = e
         end
-        expect(exception.message).to include("undefined method `destroy' for nil:NilClass")
+        expect(exception.message).to include("undefined method `remove' for nil:NilClass")
       end
     end
   end
