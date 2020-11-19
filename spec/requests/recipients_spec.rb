@@ -39,7 +39,7 @@ RSpec.describe '/recipients', type: :request do
 
       it "doesn't render removed recipients" do
         Recipient.create! valid_attributes
-        r = Recipient.create!({ phone: '6515550000', user: user, removed: true })
+        Recipient.create!({ phone: '6515550000', user: user, removed: true })
         get recipients_url
         expect(response).to be_successful
         expect(response.body).to include('6515551212')

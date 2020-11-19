@@ -24,7 +24,7 @@ class Message < ApplicationRecord
   def remove
     raise SentMessageError, 'You cannot delete a message that has been sent' if sent?
 
-    self.destroy
+    destroy
   end
 end
 

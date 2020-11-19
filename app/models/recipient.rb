@@ -33,11 +33,11 @@ class Recipient < ApplicationRecord
   # we don't just destroy if there have been sends
   def remove
     recipient_list_members.destroy_all
-    if self.message_recipients.count.zero?
-      self.destroy
+    if message_recipients.count.zero?
+      destroy
     else
       self.removed = true
-      self.save!
+      save!
     end
   end
 end

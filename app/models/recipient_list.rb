@@ -18,13 +18,13 @@ class RecipientList < ApplicationRecord
   end
 
   def remove
-    unsent_messages.each { |m| m.destroy }
+    unsent_messages.map(&:destroy)
     if sent_messages.count.positive?
       self.removed = true
-      self.save!
+      save!
     else
-      self.recipient_list_members.destroy_all
-      self.destroy
+      recipient_list_members.destroy_all
+      destroy
     end
   end
 
@@ -37,8 +37,8 @@ class RecipientList < ApplicationRecord
   end
 
   def unsent_messages
-    MessageRecipientList.where(recipient_list_id: id).select do |mrl|
-      mrl.message.status != 'Sent'
+    MessageRecipientList.where(recipient_list_id: id).reject do |mrl|
+      mrl.message.status == 'Sent'
     end
   end
 end
