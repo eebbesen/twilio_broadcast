@@ -21,6 +21,7 @@ class RecipientList < ApplicationRecord
     unsent_messages.each { |m| m.destroy }
     if sent_messages.count.positive?
       self.removed = true
+      self.save!
     else
       self.recipient_list_members.destroy_all
       self.destroy
