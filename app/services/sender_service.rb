@@ -12,8 +12,8 @@ class SenderService
   def self.send_recipient(recipient, message)
     begin
       result = TwilioTextMessenger.new(message.content).call(recipient.phone)
-    rescue Twilio::REST::RestError => e
-      store_recipient_send(recipient, { status: 'Failed', error_code: e.code, error_message: e.message })
+    rescue Twilio::REST::RestError, Twilio::REST::TwilioError  => e
+      store_recipient_send(recipient, message, { status: 'Failed', error_code: e.code, error_message: e.message })
       puts "Error sending to #{recipient.phone} for #{message.id}: #{e.message}"
       return
     end

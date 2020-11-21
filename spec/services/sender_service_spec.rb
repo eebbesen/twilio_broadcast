@@ -52,4 +52,21 @@ RSpec.describe TwilioTextMessenger do
       expect(e.error_message).to eq('To number: +15005550009, is not a mobile number')
     end
   end
+
+  it 'handles stores failed recipient' do
+    user = create(:user_1)
+    message = Message.create!(content: 'hello', user: user)
+    recipient = Recipient.create!(phone: '+16515551212', user: user)
+
+    VCR.use_cassette('twilio_rest_error') do
+      expect do
+        r = SenderService.send_recipient(recipient, message)
+      end.to change(MessageRecipient, :count).by(1)
+    end
+
+    mr = MessageRecipient.last
+    expect(mr.status).to eq('Failed')
+    expect(mr.error_code).to eq(20404)
+    expect(mr.error_message).to eq("[HTTP 404] 20404 : Unable to create record\nThe requested resource /2010-04-01/Accounts/ACaaaaaa/Messages.json was not found\nhttps://www.twilio.com/docs/errors/20404\n\n")
+  end
 end
