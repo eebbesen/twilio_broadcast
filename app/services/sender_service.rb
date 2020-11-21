@@ -12,7 +12,7 @@ class SenderService
   def self.send_recipient(recipient, message)
     begin
       result = TwilioTextMessenger.new(message.content).call(recipient.phone)
-    rescue Twilio::REST::RestError, Twilio::REST::TwilioError  => e
+    rescue Twilio::REST::RestError, Twilio::REST::TwilioError => e
       store_recipient_send(recipient, message, { status: 'Failed', error_code: e.code, error_message: e.message })
       puts "Error sending to #{recipient.phone} for #{message.id}: #{e.message}"
       return
@@ -20,13 +20,11 @@ class SenderService
     Rails.logger.debug(result)
     store_recipient_send(recipient,
                          message,
-      { status: result.status,
-                                      error_code: result.error_code,
-                                      error_message: result.error_message,
-                                      sid: result.sid })
+                         { status: result.status,
+                           error_code: result.error_code,
+                           error_message: result.error_message,
+                           sid: result.sid })
   end
-
-
 
   def self.store_recipient_send(recipient, message, details = {})
     MessageRecipient.create(

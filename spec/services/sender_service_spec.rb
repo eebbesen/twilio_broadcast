@@ -60,13 +60,13 @@ RSpec.describe TwilioTextMessenger do
 
     VCR.use_cassette('twilio_rest_error') do
       expect do
-        r = SenderService.send_recipient(recipient, message)
+        SenderService.send_recipient(recipient, message)
       end.to change(MessageRecipient, :count).by(1)
     end
 
     mr = MessageRecipient.last
     expect(mr.status).to eq('Failed')
-    expect(mr.error_code).to eq(20404)
+    expect(mr.error_code).to eq(20_404)
     expect(mr.error_message).to eq("[HTTP 404] 20404 : Unable to create record\nThe requested resource /2010-04-01/Accounts/ACaaaaaa/Messages.json was not found\nhttps://www.twilio.com/docs/errors/20404\n\n")
   end
 end
