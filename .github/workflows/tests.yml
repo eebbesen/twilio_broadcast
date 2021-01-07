@@ -45,12 +45,15 @@ jobs:
 
       - name: project setup
         run: |
-           yarn install --check-files
-           bin/rails webpacker:install
-           bin/rake db:setup
+          yarn install --check-files
+          bin/rails webpacker:install
+          bin/rake db:setup
 
       - name: run tests
-        run: bundle exec rspec
+        run: |
+          bundle exec rails webpacker:install
+          bundle exec rspec
+
       - name: Upload coverage results
         uses: actions/upload-artifact@master
         if: always()
