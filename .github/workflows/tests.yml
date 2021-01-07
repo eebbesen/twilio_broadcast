@@ -50,9 +50,7 @@ jobs:
           bin/rake db:setup
 
       - name: run tests
-        run: |
-          bundle exec rails webpacker:install
-          bundle exec rspec
+        run: bundle exec rspec
 
       - name: Upload coverage results
         uses: actions/upload-artifact@master
