@@ -116,11 +116,11 @@ RSpec.describe '/recipient_lists', type: :request do
           end.to change(RecipientListMember, :count).by(-2)
         end
 
-        it 'inactivates recipient when no keywords' do
-        end
+        # it 'inactivates recipient when no keywords' do
+        # end
 
-        it 'inactivates recipient when no valid keywords' do
-        end
+        # it 'inactivates recipient when no valid keywords' do
+        # end
       end
     end
   end

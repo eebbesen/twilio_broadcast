@@ -103,9 +103,9 @@ class RecipientListsController < ApplicationController
     r = Recipient.find_by(phone: from)
 
     if r
-      words = body.downcase.split ' '
+      words = body.downcase.split
       words.delete 'stop'
-      rls = r.recipient_lists.where(keyword: words.split(' '))
+      rls = r.recipient_lists.where(keyword: words.split)
       rlms = r.recipient_list_members.where(recipient_list_id: rls.map(&:id))
 
       if rlms.size.positive?
