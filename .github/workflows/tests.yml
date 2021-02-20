@@ -33,6 +33,10 @@ jobs:
         with:
           path: ~/.rubygems
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
 
       - uses: actions/setup-ruby@v1
