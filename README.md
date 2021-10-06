@@ -9,9 +9,12 @@ docker-compose up
 will create and run a PostgreSQL instance.
 
 ### Local setup
+Set your PostgreSQL password as environment variable `TWILIO_PG_PASS`
+
+Then set up the database and compile the artifacts
 ```bash
-bin/rake db:setup
 yarn install --check-files
+bin/rake db:setup
 bin/rails webpacker:install
 ```
 ### Running locally
