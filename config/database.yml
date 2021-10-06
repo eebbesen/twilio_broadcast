@@ -8,10 +8,11 @@ default: &default
   adapter: postgresql
   encoding: unicode
   host: localhost
-  password: postgres
+  password: <%= ENV.fetch('TWILIO_PG_PASS') %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: postgres
   timeout: 5000
+  port: 5433
 
 development:
   <<: *default
