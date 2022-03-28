@@ -9,6 +9,9 @@ class Message < ApplicationRecord
   has_many :message_recipient_lists, dependent: :delete_all
   has_many :recipient_lists, through: :message_recipient_lists
 
+  scope :pending, -> { where(status: 'Pending') }
+  scope :ready_to_send, -> { pending.where('send_time < ?', DateTime.now) }
+
   def recipient_list_active?(recipient_list_id)
     !recipient_lists.where(id: recipient_list_id).count.zero?
   end
